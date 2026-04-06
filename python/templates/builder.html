@@ -1,0 +1,620 @@
+{% extends "base.html" %}
+
+{% block title %}Конструктор ПК - Ігрофікс ПК{% endblock %}
+
+{% block content %}
+<section class="section" style="padding-top: 100px;">
+    <div class="container">
+        <div class="section-header">
+            <h1 class="section-title">⚙️ Конструктор ПК</h1>
+            <p class="section-subtitle">Збери свою ідеальну конфігурацію з автоматичною перевіркою сумісності</p>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 400px; gap: 2rem;">
+            <!-- PC Builder Area -->
+            <div>
+                <!-- PC Visualization -->
+                <div class="card" style="padding: 2rem; margin-bottom: 2rem;">
+                    <h3 style="margin-bottom: 1.5rem;">🖥️ Візуалізація збірки</h3>
+                    
+                    <div id="pcVisualization" style="
+                        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+                        border-radius: 16px;
+                        padding: 2rem;
+                        min-height: 400px;
+                        position: relative;
+                        display: grid;
+                        grid-template-columns: repeat(3, 1fr);
+                        grid-template-rows: repeat(3, 1fr);
+                        gap: 1rem;
+                    ">
+                        <!-- CPU Slot -->
+                        <div class="pc-slot" id="slot-cpu" data-slot="cpu" style="
+                            grid-column: 2;
+                            grid-row: 1;
+                            background: rgba(108, 92, 231, 0.1);
+                            border: 2px dashed rgba(108, 92, 231, 0.3);
+                            border-radius: 12px;
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            justify-content: center;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                            padding: 1rem;
+                        ">
+                            <span style="font-size: 2rem;">💻</span>
+                            <span style="font-size: 0.8rem; color: var(--text-muted);">Процесор</span>
+                            <span class="slot-name" style="font-size: 0.75rem; color: var(--primary-light); margin-top: 0.5rem;"></span>
+                        </div>
+                        
+                        <!-- GPU Slot -->
+                        <div class="pc-slot" id="slot-gpu" data-slot="gpu" style="
+                            grid-column: 1 / 4;
+                            grid-row: 2;
+                            background: rgba(253, 121, 168, 0.1);
+                            border: 2px dashed rgba(253, 121, 168, 0.3);
+                            border-radius: 12px;
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            justify-content: center;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                            padding: 1rem;
+                        ">
+                            <span style="font-size: 2rem;">🎮</span>
+                            <span style="font-size: 0.8rem; color: var(--text-muted);">Відеокарта</span>
+                            <span class="slot-name" style="font-size: 0.75rem; color: var(--primary-light); margin-top: 0.5rem;"></span>
+                        </div>
+                        
+                        <!-- RAM Slot -->
+                        <div class="pc-slot" id="slot-ram" data-slot="ram" style="
+                            grid-column: 1;
+                            grid-row: 1;
+                            background: rgba(0, 206, 201, 0.1);
+                            border: 2px dashed rgba(0, 206, 201, 0.3);
+                            border-radius: 12px;
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            justify-content: center;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                            padding: 1rem;
+                        ">
+                            <span style="font-size: 2rem;">🧠</span>
+                            <span style="font-size: 0.8rem; color: var(--text-muted);">ОЗП</span>
+                            <span class="slot-name" style="font-size: 0.75rem; color: var(--primary-light); margin-top: 0.5rem;"></span>
+                        </div>
+                        
+                        <!-- Motherboard Slot -->
+                        <div class="pc-slot" id="slot-motherboard" data-slot="motherboard" style="
+                            grid-column: 1;
+                            grid-row: 2;
+                            background: rgba(253, 203, 110, 0.1);
+                            border: 2px dashed rgba(253, 203, 110, 0.3);
+                            border-radius: 12px;
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            justify-content: center;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                            padding: 1rem;
+                        ">
+                            <span style="font-size: 2rem;">🔲</span>
+                            <span style="font-size: 0.8rem; color: var(--text-muted);">Материнська плата</span>
+                            <span class="slot-name" style="font-size: 0.75rem; color: var(--primary-light); margin-top: 0.5rem;"></span>
+                        </div>
+                        
+                        <!-- Storage Slot -->
+                        <div class="pc-slot" id="slot-storage" data-slot="storage" style="
+                            grid-column: 3;
+                            grid-row: 1;
+                            background: rgba(0, 184, 148, 0.1);
+                            border: 2px dashed rgba(0, 184, 148, 0.3);
+                            border-radius: 12px;
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            justify-content: center;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                            padding: 1rem;
+                        ">
+                            <span style="font-size: 2rem;">💾</span>
+                            <span style="font-size: 0.8rem; color: var(--text-muted);">Накопичувач</span>
+                            <span class="slot-name" style="font-size: 0.75rem; color: var(--primary-light); margin-top: 0.5rem;"></span>
+                        </div>
+                        
+                        <!-- PSU Slot -->
+                        <div class="pc-slot" id="slot-psu" data-slot="psu" style="
+                            grid-column: 3;
+                            grid-row: 2;
+                            background: rgba(253, 121, 168, 0.1);
+                            border: 2px dashed rgba(253, 121, 168, 0.3);
+                            border-radius: 12px;
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            justify-content: center;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                            padding: 1rem;
+                        ">
+                            <span style="font-size: 2rem;">⚡</span>
+                            <span style="font-size: 0.8rem; color: var(--text-muted);">Блок живлення</span>
+                            <span class="slot-name" style="font-size: 0.75rem; color: var(--primary-light); margin-top: 0.5rem;"></span>
+                        </div>
+                        
+                        <!-- Case Slot -->
+                        <div class="pc-slot" id="slot-case" data-slot="case" style="
+                            grid-column: 1 / 4;
+                            grid-row: 3;
+                            background: rgba(108, 92, 231, 0.1);
+                            border: 2px dashed rgba(108, 92, 231, 0.3);
+                            border-radius: 12px;
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            justify-content: center;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                            padding: 1rem;
+                        ">
+                            <span style="font-size: 2rem;">🏠</span>
+                            <span style="font-size: 0.8rem; color: var(--text-muted);">Корпус</span>
+                            <span class="slot-name" style="font-size: 0.75rem; color: var(--primary-light); margin-top: 0.5rem;"></span>
+                        </div>
+                    </div>
+                    
+                    <!-- Compatibility Status -->
+                    <div id="compatibilityStatus" style="margin-top: 1.5rem; padding: 1rem; border-radius: 12px; display: none;">
+                        <div id="compatibilityMessage"></div>
+                    </div>
+                </div>
+                
+                <!-- Component Selector -->
+                <div class="card" style="padding: 2rem;">
+                    <h3 style="margin-bottom: 1.5rem;">Вибір компонентів</h3>
+                    
+                    <!-- Category Tabs -->
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem;">
+                        {% for category in categories %}
+                        <button class="btn btn-sm category-tab {% if loop.first %}btn-primary{% else %}btn-secondary{% endif %}" 
+                                data-category="{{ category.slug }}"
+                                onclick="switchCategory('{{ category.slug }}', {{ category.id }})">
+                            {% if category.icon == 'cpu' %}💻
+                            {% elif category.icon == 'gpu' %}🎮
+                            {% elif category.icon == 'ram' %}🧠
+                            {% elif category.icon == 'storage' %}💾
+                            {% elif category.icon == 'motherboard' %}🔲
+                            {% elif category.icon == 'psu' %}⚡
+                            {% elif category.icon == 'case' %}🏠
+                            {% elif category.icon == 'cooling' %}❄️
+                            {% else %}📦
+                            {% endif %}
+                            {{ category.name }}
+                        </button>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Products List -->
+                    <div id="productsList" style="max-height: 400px; overflow-y: auto;">
+                        <p style="text-align: center; color: var(--text-muted); padding: 1rem;">Перетягніть компонент на відповідний слот або натисніть "Вибрати"</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Summary Sidebar -->
+            <div>
+                <div class="card" style="padding: 2rem; position: sticky; top: 100px;">
+                    <h3 style="margin-bottom: 1.5rem;">📋 Зведення збірки</h3>
+                    
+                    <!-- Selected Components List -->
+                    <div id="selectedComponents" style="margin-bottom: 2rem;">
+                        <p style="color: var(--text-muted); text-align: center;">Клікніть на слот для вибору компонента</p>
+                    </div>
+                    
+                    <!-- Total Price -->
+                    <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                            <span style="color: var(--text-secondary);">Всього:</span>
+                            <span id="totalPrice" style="font-size: 1.5rem; font-weight: 700; color: var(--primary-light);">0 ₴</span>
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <button class="btn btn-primary w-100 mb-2" onclick="saveConfiguration()" id="saveBtn" disabled>
+                            <span>💾</span> Зберегти конфігурацію
+                        </button>
+                        
+                        <button class="btn btn-secondary w-100 mb-2" onclick="addConfigurationToCart()" id="addCartBtn" disabled>
+                            <span>🛒</span> Додати все в кошик
+                        </button>
+                        
+                        <button class="btn btn-secondary w-100" onclick="clearConfiguration()" id="clearBtn">
+                            <span>🗑️</span> Очистити все
+                        </button>
+                    </div>
+                    
+                    <!-- Compatibility Info -->
+                    <div style="margin-top: 2rem; padding: 1rem; background: var(--card-bg-hover); border-radius: 12px;">
+                        <h4 style="font-size: 0.9rem; margin-bottom: 1rem;">💡 Поради</h4>
+                        <ul style="font-size: 0.85rem; color: var(--text-secondary); padding-left: 1rem;">
+                            <li>Блок живлення має витримувати навантаження всіх компонентів</li>
+                            <li>Процесор і материнська плата повинні мати однаковий сокет</li>
+                            <li>Тип оперативної пам'яті повинен відповідати материнській платі</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Save Configuration Modal -->
+<div id="saveModal" style="
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+">
+    <div class="card" style="padding: 2rem; max-width: 400px; width: 90%;">
+        <h3 style="margin-bottom: 1.5rem;">💾 Зберегти конфігурацію</h3>
+        
+        <div class="form-group">
+            <label class="form-label">Назва конфігурації</label>
+            <input type="text" id="configName" class="form-control" placeholder="Моя ігрова збірка">
+        </div>
+        
+        <div style="display: flex; gap: 1rem;">
+            <button class="btn btn-secondary flex-grow-1" onclick="closeSaveModal()">Скасувати</button>
+            <button class="btn btn-primary flex-grow-1" onclick="confirmSaveConfiguration()">Зберегти</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const productsData = {{ products|tojson }};
+    let selectedComponents = {};
+    const categoryToSlot = {
+        'cpu': 'cpu', 'gpu': 'gpu', 'ram': 'ram', 'storage': 'storage',
+        'motherboard': 'motherboard', 'psu': 'psu', 'case': 'case', 'cooling': 'case'
+    };
+    let activeSlot = null;
+    let draggedProduct = null;
+    let draggedSlug = null;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        switchCategory('cpu', 1);
+
+        document.querySelectorAll('.pc-slot').forEach(slot => {
+            slot.addEventListener('click', function() {
+                selectSlot(this.dataset.slot);
+            });
+
+            slot.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.style.borderColor = 'var(--secondary)';
+                this.style.background = 'rgba(0, 206, 201, 0.25)';
+                this.style.transform = 'scale(1.05)';
+            });
+
+            slot.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                resetSlotHighlight(this);
+            });
+
+            slot.addEventListener('drop', function(e) {
+                e.preventDefault();
+                resetSlotHighlight(this);
+                const targetSlot = this.dataset.slot;
+                if (draggedProduct && draggedSlug) {
+                    const expectedSlot = categoryToSlot[draggedSlug];
+                    if (expectedSlot === targetSlot) {
+                        selectProduct(draggedProduct.id, draggedSlug);
+                        this.style.animation = 'drop-bounce 0.4s ease';
+                        setTimeout(() => this.style.animation = '', 400);
+                        triggerLightningEffect();
+                    } else {
+                        showToast('Цей компонент не підходить для цього слоту!', 'warning');
+                        this.style.animation = 'shake 0.4s ease';
+                        setTimeout(() => this.style.animation = '', 400);
+                    }
+                }
+                draggedProduct = null;
+                draggedSlug = null;
+            });
+        });
+    });
+
+    function resetSlotHighlight(slotEl) {
+        const slot = slotEl.dataset.slot;
+        if (selectedComponents[slot]) {
+            slotEl.style.borderColor = 'var(--success)';
+            slotEl.style.background = 'rgba(0, 184, 148, 0.2)';
+        } else {
+            slotEl.style.borderColor = '';
+            slotEl.style.background = '';
+        }
+        slotEl.style.transform = '';
+    }
+
+    function switchCategory(slug, categoryId) {
+        document.querySelectorAll('.category-tab').forEach(tab => {
+            tab.classList.remove('btn-primary');
+            tab.classList.add('btn-secondary');
+        });
+        const clickedTab = document.querySelector(`.category-tab[data-category="${slug}"]`);
+        if (clickedTab) {
+            clickedTab.classList.remove('btn-secondary');
+            clickedTab.classList.add('btn-primary');
+        }
+
+        const products = productsData.filter(p => p.category_id === categoryId);
+        const productsList = document.getElementById('productsList');
+        productsList.innerHTML = '';
+
+        if (products.length === 0) {
+            productsList.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">Товари не знайдені</p>';
+            return;
+        }
+
+        products.forEach(product => {
+            const isSelected = Object.values(selectedComponents).includes(product.id);
+            const productCard = document.createElement('div');
+            productCard.className = 'card product-card';
+            productCard.draggable = true;
+            productCard.style.cssText = 'margin-bottom: 1rem; padding: 1rem; cursor: grab;';
+            productCard.dataset.productId = product.id;
+            productCard.dataset.categorySlug = slug;
+
+            productCard.addEventListener('dragstart', function(e) {
+                draggedProduct = product;
+                draggedSlug = slug;
+                this.style.opacity = '0.5';
+                this.style.cursor = 'grabbing';
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', product.id);
+
+                document.querySelectorAll('.pc-slot').forEach(s => {
+                    const expectedSlot = categoryToSlot[slug];
+                    if (s.dataset.slot === expectedSlot) {
+                        s.style.borderColor = 'var(--secondary)';
+                        s.style.animation = 'pulse-animation 1s ease-in-out infinite';
+                    }
+                });
+            });
+
+            productCard.addEventListener('dragend', function() {
+                this.style.opacity = '1';
+                this.style.cursor = 'grab';
+                document.querySelectorAll('.pc-slot').forEach(s => {
+                    s.style.animation = '';
+                    resetSlotHighlight(s);
+                });
+            });
+
+            productCard.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div style="width: 60px; height: 60px; background: var(--card-bg-hover); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <span style="font-size: 1.5rem;">📦</span>
+                    </div>
+                    <div style="flex: 1; min-width: 0;">
+                        <h4 style="font-size: 1rem; margin-bottom: 0.25rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${product.name}</h4>
+                        <p style="font-size: 0.8rem; color: var(--text-muted);">${product.brand || ''}</p>
+                        <p style="font-weight: 600; color: var(--primary-light);">${formatPrice(product.price)}</p>
+                    </div>
+                    <button class="btn btn-sm ${isSelected ? 'btn-success' : 'btn-primary'}"
+                            onclick="event.stopPropagation(); selectProduct(${product.id}, '${slug}')"
+                            ${isSelected ? 'disabled' : ''}>
+                        ${isSelected ? '&#10003; Вибрано' : 'Вибрати'}
+                    </button>
+                </div>
+            `;
+            productsList.appendChild(productCard);
+        });
+    }
+
+    function selectSlot(slotName) {
+        document.querySelectorAll('.pc-slot').forEach(s => {
+            if (!selectedComponents[s.dataset.slot]) {
+                s.style.borderColor = '';
+                s.style.background = '';
+            }
+        });
+
+        activeSlot = slotName;
+        const slot = document.getElementById('slot-' + slotName);
+        if (!selectedComponents[slotName]) {
+            slot.style.borderColor = 'var(--primary)';
+            slot.style.background = 'rgba(108, 92, 231, 0.2)';
+        }
+
+        const categoryMap = {
+            'cpu': [1, 'cpu'], 'gpu': [2, 'gpu'], 'ram': [3, 'ram'], 'storage': [4, 'storage'],
+            'motherboard': [5, 'motherboard'], 'psu': [6, 'psu'], 'case': [7, 'case'], 'cooling': [8, 'cooling']
+        };
+        const [catId, catSlug] = categoryMap[slotName] || [1, 'cpu'];
+        switchCategory(catSlug, catId);
+    }
+
+    function selectProduct(productId, categorySlug) {
+        const product = productsData.find(p => p.id === productId);
+        if (!product) return;
+
+        const slot = categoryToSlot[categorySlug] || categorySlug;
+        selectedComponents[slot] = productId;
+        updateSlotVisual(slot, product);
+        updateSummary();
+        checkCompatibility();
+
+        const slotEl = document.getElementById('slot-' + slot);
+        slotEl.style.animation = 'drop-bounce 0.4s ease';
+        setTimeout(() => slotEl.style.animation = '', 400);
+
+        triggerLightningEffect();
+        switchCategory(categorySlug, product.category_id);
+    }
+
+    function updateSlotVisual(slot, product) {
+        const slotEl = document.getElementById('slot-' + slot);
+        const slotName = slotEl.querySelector('.slot-name');
+        slotEl.style.borderColor = 'var(--success)';
+        slotEl.style.borderStyle = 'solid';
+        slotEl.style.background = 'rgba(0, 184, 148, 0.2)';
+        slotName.textContent = product.name.length > 25 ? product.name.substring(0, 22) + '...' : product.name;
+        slotName.style.color = 'var(--success)';
+    }
+
+    function updateSummary() {
+        const summary = document.getElementById('selectedComponents');
+        const totalPrice = document.getElementById('totalPrice');
+        let total = 0;
+        let html = '';
+
+        for (const [slot, productId] of Object.entries(selectedComponents)) {
+            const product = productsData.find(p => p.id === productId);
+            if (product) {
+                total += product.price;
+                html += `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                        <div>
+                            <span style="font-weight: 500;">${getSlotDisplayName(slot)}</span>
+                            <p style="font-size: 0.85rem; color: var(--text-secondary);">${product.name}</p>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="color: var(--primary-light);">${formatPrice(product.price)}</span>
+                            <button onclick="removeComponent('${slot}')" style="background: none; border: none; color: var(--danger); cursor: pointer; font-size: 1.2rem;">&times;</button>
+                        </div>
+                    </div>`;
+            }
+        }
+
+        if (!html) html = '<p style="color: var(--text-muted); text-align: center;">Перетягніть компонент на слот або натисніть "Вибрати"</p>';
+        summary.innerHTML = html;
+        totalPrice.textContent = formatPrice(total);
+        const hasComponents = Object.keys(selectedComponents).length > 0;
+        document.getElementById('saveBtn').disabled = !hasComponents;
+        document.getElementById('addCartBtn').disabled = !hasComponents;
+    }
+
+    function getSlotDisplayName(slot) {
+        const names = {
+            'cpu': '💻 Процесор', 'gpu': '🎮 Відеокарта', 'ram': '🧠 ОЗП',
+            'storage': '💾 Накопичувач', 'motherboard': '🔲 Мат. плата',
+            'psu': '⚡ Блок живлення', 'case': '🏠 Корпус'
+        };
+        return names[slot] || slot;
+    }
+
+    function removeComponent(slot) {
+        delete selectedComponents[slot];
+        const slotEl = document.getElementById('slot-' + slot);
+        const slotName = slotEl.querySelector('.slot-name');
+        slotEl.style.borderColor = '';
+        slotEl.style.borderStyle = 'dashed';
+        slotEl.style.background = '';
+        slotName.textContent = '';
+        slotName.style.color = 'var(--primary-light)';
+        updateSummary();
+        checkCompatibility();
+    }
+
+    function clearConfiguration() {
+        for (const slot of Object.keys(selectedComponents)) {
+            removeComponent(slot);
+        }
+        selectedComponents = {};
+        updateSummary();
+        checkCompatibility();
+    }
+
+    async function checkCompatibility() {
+        const status = document.getElementById('compatibilityStatus');
+        const message = document.getElementById('compatibilityMessage');
+        if (Object.keys(selectedComponents).length < 2) { status.style.display = 'none'; return; }
+        try {
+            const response = await fetch('/api/compatibility', {
+                method: 'POST', headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({components: selectedComponents})
+            });
+            const result = await response.json();
+            status.style.display = 'block';
+            if (result.compatible) {
+                status.style.background = 'rgba(0, 184, 148, 0.1)';
+                status.style.border = '1px solid var(--success)';
+                message.innerHTML = '<span style="color: var(--success);">&#10003;</span> Всі компоненти сумісні!';
+            } else {
+                status.style.background = 'rgba(214, 48, 49, 0.1)';
+                status.style.border = '1px solid var(--danger)';
+                message.innerHTML = '<span style="color: var(--danger);">&#10007;</span> ' + result.issues.map(i => i.message).join('<br>');
+            }
+        } catch (error) { console.error('Compatibility check failed:', error); }
+    }
+
+    function saveConfiguration() {
+        document.getElementById('saveModal').style.display = 'flex';
+        document.getElementById('configName').focus();
+    }
+    function closeSaveModal() {
+        document.getElementById('saveModal').style.display = 'none';
+    }
+    async function confirmSaveConfiguration() {
+        const name = document.getElementById('configName').value || 'Моя конфігурація';
+        try {
+            const response = await fetch('/save-configuration', {
+                method: 'POST', headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ name: name, components: selectedComponents })
+            });
+            const result = await response.json();
+            if (result.success) { showToast('Конфігурацію збережено!', 'success'); closeSaveModal(); }
+            else { showToast('Помилка збереження. Увійдіть в систему.', 'danger'); }
+        } catch (error) { showToast('Помилка збереження. Увійдіть в систему.', 'danger'); }
+    }
+
+    async function addConfigurationToCart() {
+        for (const productId of Object.values(selectedComponents)) {
+            try {
+                await fetch('/api/cart/add', {
+                    method: 'POST', headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ product_id: productId, quantity: 1 })
+                });
+            } catch(e) {}
+        }
+        showToast('Всі компоненти додано до кошика!', 'success');
+        setTimeout(() => { window.location.href = '/cart'; }, 1000);
+    }
+
+    function formatPrice(price) {
+        return price.toLocaleString('uk-UA').replace(',', ' ') + ' ₴';
+    }
+    function triggerLightningEffect() {
+        const overlay = document.getElementById('lightningOverlay');
+        if (!overlay) return;
+        overlay.classList.add('active');
+        setTimeout(() => overlay.classList.remove('active'), 200);
+    }
+</script>
+<style>
+    @keyframes drop-bounce {
+        0% { transform: scale(1); }
+        30% { transform: scale(1.1); }
+        60% { transform: scale(0.95); }
+        100% { transform: scale(1); }
+    }
+    .pc-slot { transition: all 0.3s ease; }
+    .pc-slot:hover { transform: scale(1.03); }
+    [draggable="true"] { cursor: grab; }
+    [draggable="true"]:active { cursor: grabbing; }
+</style>
+{% endblock %}

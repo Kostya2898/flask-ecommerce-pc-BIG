@@ -1,0 +1,391 @@
+{% extends "base.html" %}
+
+{% block title %}Ігрофікс ПК - Головна{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-content slide-in-left">
+            <h1 class="hero-title">
+                Збери свій 
+                <span>ідеальний ігровий ПК</span>
+            </h1>
+            <p class="hero-subtitle">
+                Найпотужніші комплектуючі від провідних виробників. 
+                Конструктор ПК з автоматичною перевіркою сумісності.
+            </p>
+            <div class="hero-buttons">
+                <a href="{{ url_for('catalog') }}" class="btn btn-primary btn-lg btn-glow-animate">
+                    <span>🛒</span> Переглянути каталог
+                </a>
+                <a href="{{ url_for('builder') }}" class="btn btn-secondary btn-lg">
+                    <span>⚙️</span> Конструктор ПК
+                </a>
+            </div>
+        </div>
+        
+        <!-- Animated PC Illustration -->
+        <div class="hero-image">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%;">
+                <defs>
+                    <linearGradient id="heroGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#6c5ce7"/>
+                        <stop offset="50%" style="stop-color:#00cec9"/>
+                        <stop offset="100%" style="stop-color:#fd79a8"/>
+                    </linearGradient>
+                    <filter id="glow">
+                        <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                        <feMerge>
+                            <feMergeNode in="coloredBlur"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                </defs>
+                <circle cx="100" cy="100" r="80" fill="none" stroke="url(#heroGradient)" stroke-width="2" opacity="0.3" filter="url(#glow)">
+                    <animate attributeName="r" values="80;85;80" dur="3s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="100" cy="100" r="60" fill="none" stroke="url(#heroGradient)" stroke-width="2" opacity="0.5" filter="url(#glow)">
+                    <animate attributeName="r" values="60;65;60" dur="2.5s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="100" cy="100" r="40" fill="none" stroke="url(#heroGradient)" stroke-width="2" opacity="0.7" filter="url(#glow)">
+                    <animate attributeName="r" values="40;45;40" dur="2s" repeatCount="indefinite"/>
+                </circle>
+                <text x="100" y="105" text-anchor="middle" fill="url(#heroGradient)" font-size="30" font-weight="bold" filter="url(#glow)">PC</text>
+            </svg>
+        </div>
+    </div>
+</section>
+
+<!-- Categories Section -->
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Категорії товарів</h2>
+            <p class="section-subtitle">Оберіть категорію для перегляду товарів</p>
+        </div>
+        
+        <div class="categories-grid" data-stagger>
+            {% for category in categories %}
+            <a href="{{ url_for('catalog', slug=category.slug) }}" class="category-card card-hover-lift">
+                <span class="category-icon">
+                    {% if category.icon == 'cpu' %}
+                    <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="15" y="15" width="30" height="30" rx="2" stroke="currentColor" stroke-width="2"/>
+                        <rect x="20" y="20" width="20" height="20" rx="1" fill="currentColor" opacity="0.2"/>
+                        <line x1="10" y1="20" x2="15" y2="20" stroke="currentColor" stroke-width="2"/>
+                        <line x1="10" y1="30" x2="15" y2="30" stroke="currentColor" stroke-width="2"/>
+                        <line x1="10" y1="40" x2="15" y2="40" stroke="currentColor" stroke-width="2"/>
+                        <line x1="45" y1="20" x2="50" y2="20" stroke="currentColor" stroke-width="2"/>
+                        <line x1="45" y1="30" x2="50" y2="30" stroke="currentColor" stroke-width="2"/>
+                        <line x1="45" y1="40" x2="50" y2="40" stroke="currentColor" stroke-width="2"/>
+                        <line x1="20" y1="10" x2="20" y2="15" stroke="currentColor" stroke-width="2"/>
+                        <line x1="30" y1="10" x2="30" y2="15" stroke="currentColor" stroke-width="2"/>
+                        <line x1="40" y1="10" x2="40" y2="15" stroke="currentColor" stroke-width="2"/>
+                        <line x1="20" y1="45" x2="20" y2="50" stroke="currentColor" stroke-width="2"/>
+                        <line x1="30" y1="45" x2="30" y2="50" stroke="currentColor" stroke-width="2"/>
+                        <line x1="40" y1="45" x2="40" y2="50" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                    {% elif category.icon == 'gpu' %}
+                    <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="5" y="20" width="50" height="25" rx="2" stroke="currentColor" stroke-width="2"/>
+                        <rect x="10" y="25" width="15" height="15" fill="currentColor" opacity="0.3"/>
+                        <circle cx="42" cy="32" r="8" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="42" cy="32" r="4" fill="currentColor" opacity="0.3"/>
+                        <line x1="10" y1="48" x2="10" y2="52" stroke="currentColor" stroke-width="2"/>
+                        <line x1="20" y1="48" x2="20" y2="52" stroke="currentColor" stroke-width="2"/>
+                        <line x1="30" y1="48" x2="30" y2="52" stroke="currentColor" stroke-width="2"/>
+                        <line x1="40" y1="48" x2="40" y2="52" stroke="currentColor" stroke-width="2"/>
+                        <line x1="50" y1="48" x2="50" y2="52" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                    {% elif category.icon == 'ram' %}
+                    <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="10" y="15" width="8" height="35" rx="1" stroke="currentColor" stroke-width="2"/>
+                        <rect x="22" y="15" width="8" height="35" rx="1" stroke="currentColor" stroke-width="2"/>
+                        <rect x="34" y="15" width="8" height="35" rx="1" stroke="currentColor" stroke-width="2"/>
+                        <rect x="46" y="15" width="8" height="35" rx="1" stroke="currentColor" stroke-width="2"/>
+                        <rect x="12" y="18" width="4" height="3" fill="currentColor" opacity="0.5"/>
+                        <rect x="24" y="18" width="4" height="3" fill="currentColor" opacity="0.5"/>
+                        <rect x="36" y="18" width="4" height="3" fill="currentColor" opacity="0.5"/>
+                        <rect x="48" y="18" width="4" height="3" fill="currentColor" opacity="0.5"/>
+                    </svg>
+                    {% elif category.icon == 'storage' %}
+                    <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="10" y="20" width="40" height="25" rx="2" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="42" cy="32" r="4" stroke="currentColor" stroke-width="2"/>
+                        <line x1="15" y1="30" x2="35" y2="30" stroke="currentColor" stroke-width="1" opacity="0.3"/>
+                        <rect x="15" y="25" width="20" height="3" fill="currentColor" opacity="0.3"/>
+                    </svg>
+                    {% elif category.icon == 'motherboard' %}
+                    <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="8" y="8" width="44" height="44" rx="2" stroke="currentColor" stroke-width="2"/>
+                        <rect x="15" y="15" width="15" height="15" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+                        <rect x="35" y="35" width="10" height="10" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+                        <circle cx="45" cy="15" r="3" stroke="currentColor" stroke-width="1"/>
+                        <line x1="10" y1="35" x2="20" y2="35" stroke="currentColor" stroke-width="1"/>
+                        <line x1="10" y1="40" x2="20" y2="40" stroke="currentColor" stroke-width="1"/>
+                        <line x1="10" y1="45" x2="20" y2="45" stroke="currentColor" stroke-width="1"/>
+                    </svg>
+                    {% elif category.icon == 'psu' %}
+                    <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="8" y="15" width="44" height="30" rx="2" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="20" cy="30" r="10" stroke="currentColor" stroke-width="2"/>
+                        <line x1="20" y1="23" x2="20" y2="30" stroke="currentColor" stroke-width="2"/>
+                        <line x1="20" y1="30" x2="26" y2="35" stroke="currentColor" stroke-width="2"/>
+                        <rect x="35" y="22" width="12" height="3" fill="currentColor" opacity="0.5"/>
+                        <rect x="35" y="28" width="12" height="3" fill="currentColor" opacity="0.5"/>
+                    </svg>
+                    {% elif category.icon == 'case' %}
+                    <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="12" y="8" width="36" height="44" rx="2" stroke="currentColor" stroke-width="2"/>
+                        <rect x="17" y="13" width="26" height="20" rx="1" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+                        <circle cx="22" cy="42" r="4" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="35" cy="42" r="4" stroke="currentColor" stroke-width="2"/>
+                        <line x1="25" y1="13" x2="25" y2="33" stroke="currentColor" stroke-width="1" opacity="0.3"/>
+                        <line x1="35" y1="13" x2="35" y2="33" stroke="currentColor" stroke-width="1" opacity="0.3"/>
+                    </svg>
+                    {% elif category.icon == 'cooling' %}
+                    <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="30" cy="30" r="20" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="30" cy="30" r="8" stroke="currentColor" stroke-width="2"/>
+                        <line x1="30" y1="10" x2="30" y2="18" stroke="currentColor" stroke-width="2"/>
+                        <line x1="30" y1="42" x2="30" y2="50" stroke="currentColor" stroke-width="2"/>
+                        <line x1="10" y1="30" x2="18" y2="30" stroke="currentColor" stroke-width="2"/>
+                        <line x1="42" y1="30" x2="50" y2="30" stroke="currentColor" stroke-width="2"/>
+                        <line x1="15" y1="15" x2="21" y2="21" stroke="currentColor" stroke-width="2"/>
+                        <line x1="39" y1="39" x2="45" y2="45" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                    {% else %}
+                    📦
+                    {% endif %}
+                </span>
+                <h3>{{ category.name }}</h3>
+                <p>{{ category.description or 'Переглянути товари' }}</p>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products -->
+<section class="section" style="background: linear-gradient(180deg, transparent 0%, rgba(108, 92, 231, 0.05) 50%, transparent 100%);">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Рекомендовані товари</h2>
+            <p class="section-subtitle">Найкращі пропозиції для вашого ігрового ПК</p>
+        </div>
+        
+        <div class="products-grid" data-stagger>
+            {% for product in featured_products %}
+            <div class="card product-card">
+                <div class="badges">
+                    {% if product.new %}
+                    <span class="badge badge-new">Новинка</span>
+                    {% endif %}
+                    {% if product.old_price and product.old_price > product.price %}
+                    <span class="badge badge-sale">Знижка</span>
+                    {% endif %}
+                    {% if product.bestseller %}
+                    <span class="badge badge-bestseller">Бестселер</span>
+                    {% endif %}
+                </div>
+                <div class="card-img">
+                    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="width: 150px; height: 150px;">
+                        <defs>
+                            <linearGradient id="productGrad{{ loop.index }}" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#6c5ce7;stop-opacity:0.3"/>
+                                <stop offset="100%" style="stop-color:#00cec9;stop-opacity:0.3"/>
+                            </linearGradient>
+                        </defs>
+                        <rect x="20" y="20" width="160" height="160" rx="20" fill="url(#productGrad{{ loop.index }})" stroke="#6c5ce7" stroke-width="2"/>
+                        <circle cx="100" cy="100" r="50" fill="none" stroke="#6c5ce7" stroke-width="2" opacity="0.5"/>
+                        <circle cx="100" cy="100" r="30" fill="none" stroke="#00cec9" stroke-width="2" opacity="0.7"/>
+                        <text x="100" y="105" text-anchor="middle" fill="#a29bfe" font-size="14" font-weight="bold">{{ product.brand[:3]|upper if product.brand else 'GEN' }}</text>
+                    </svg>
+                </div>
+                <div class="card-body">
+                    <p class="brand">{{ product.brand or 'Generic' }}</p>
+                    <h3 class="card-title">{{ product.name }}</h3>
+                    <div class="price">
+                        {{ "{:,.0f}".format(product.price).replace(",", " ") }} ₴
+                        {% if product.old_price and product.old_price > product.price %}
+                        <span class="old-price">{{ "{:,.0f}".format(product.old_price).replace(",", " ") }} ₴</span>
+                        {% endif %}
+                    </div>
+                    <div class="d-flex gap-2 mt-3">
+                        <button class="btn btn-primary btn-sm flex-grow-1 add-to-cart-btn" 
+                                data-product-id="{{ product.id }}"
+                                onclick="addToCart({{ product.id }}, this)">
+                            <span>🛒</span> В кошик
+                        </button>
+                        <a href="{{ url_for('product', slug=product.slug) }}" class="btn btn-secondary btn-sm">
+                            <span>👁️</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-5">
+            <a href="{{ url_for('catalog') }}" class="btn btn-primary btn-lg btn-glow-animate">
+                <span>📦</span> Всі товари каталогу
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- New Products -->
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Новинки</h2>
+            <p class="section-subtitle">Останні надходження товарів</p>
+        </div>
+        
+        <div class="products-grid" data-stagger>
+            {% for product in new_products %}
+            <div class="card product-card">
+                <div class="badges">
+                    <span class="badge badge-new">Новинка</span>
+                </div>
+                <div class="card-img">
+                    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="width: 150px; height: 150px;">
+                        <defs>
+                            <linearGradient id="newGrad{{ loop.index }}" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#00cec9;stop-opacity:0.3"/>
+                                <stop offset="100%" style="stop-color:#fd79a8;stop-opacity:0.3"/>
+                            </linearGradient>
+                        </defs>
+                        <polygon points="100,20 180,100 100,180 20,100" fill="url(#newGrad{{ loop.index }})" stroke="#00cec9" stroke-width="2"/>
+                        <circle cx="100" cy="100" r="30" fill="none" stroke="#00cec9" stroke-width="2"/>
+                        <text x="100" y="105" text-anchor="middle" fill="#00cec9" font-size="12" font-weight="bold">NEW</text>
+                    </svg>
+                </div>
+                <div class="card-body">
+                    <p class="brand">{{ product.brand or 'Generic' }}</p>
+                    <h3 class="card-title">{{ product.name }}</h3>
+                    <div class="price">
+                        {{ "{:,.0f}".format(product.price).replace(",", " ") }} ₴
+                    </div>
+                    <div class="d-flex gap-2 mt-3">
+                        <button class="btn btn-primary btn-sm flex-grow-1 add-to-cart-btn" 
+                                data-product-id="{{ product.id }}"
+                                onclick="addToCart({{ product.id }}, this)">
+                            <span>🛒</span> В кошик
+                        </button>
+                        <a href="{{ url_for('product', slug=product.slug) }}" class="btn btn-secondary btn-sm">
+                            <span>👁️</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Bestsellers -->
+<section class="section" style="background: linear-gradient(180deg, transparent 0%, rgba(253, 121, 168, 0.05) 50%, transparent 100%);">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Бестселери</h2>
+            <p class="section-subtitle">Найпопулярніші товари серед покупців</p>
+        </div>
+        
+        <div class="products-grid" data-stagger>
+            {% for product in bestseller_products %}
+            <div class="card product-card">
+                <div class="badges">
+                    <span class="badge badge-bestseller">Бестселер</span>
+                </div>
+                <div class="card-img">
+                    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="width: 150px; height: 150px;">
+                        <defs>
+                            <linearGradient id="bestGrad{{ loop.index }}" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#fd79a8;stop-opacity:0.3"/>
+                                <stop offset="100%" style="stop-color:#fdcb6e;stop-opacity:0.3"/>
+                            </linearGradient>
+                        </defs>
+                        <circle cx="100" cy="100" r="70" fill="url(#bestGrad{{ loop.index }})" stroke="#fd79a8" stroke-width="2"/>
+                        <path d="M60 100 L90 130 L140 70" fill="none" stroke="#fd79a8" stroke-width="4" stroke-linecap="round"/>
+                        <text x="100" y="160" text-anchor="middle" fill="#fd79a8" font-size="14" font-weight="bold">TOP</text>
+                    </svg>
+                </div>
+                <div class="card-body">
+                    <p class="brand">{{ product.brand or 'Generic' }}</p>
+                    <h3 class="card-title">{{ product.name }}</h3>
+                    <div class="price">
+                        {{ "{:,.0f}".format(product.price).replace(",", " ") }} ₴
+                        {% if product.old_price and product.old_price > product.price %}
+                        <span class="old-price">{{ "{:,.0f}".format(product.old_price).replace(",", " ") }} ₴</span>
+                        {% endif %}
+                    </div>
+                    <div class="d-flex gap-2 mt-3">
+                        <button class="btn btn-primary btn-sm flex-grow-1 add-to-cart-btn" 
+                                data-product-id="{{ product.id }}"
+                                onclick="addToCart({{ product.id }}, this)">
+                            <span>🛒</span> В кошик
+                        </button>
+                        <a href="{{ url_for('product', slug=product.slug) }}" class="btn btn-secondary btn-sm">
+                            <span>👁️</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Builder CTA -->
+<section class="section">
+    <div class="container">
+        <div class="card" style="background: linear-gradient(135deg, rgba(108, 92, 231, 0.2) 0%, rgba(0, 206, 201, 0.2) 100%); padding: 3rem; text-align: center; border: 1px solid rgba(108, 92, 231, 0.3);">
+            <h2 class="section-title">🎮 Збери свій ігровий ПК</h2>
+            <p class="section-subtitle mb-4">
+                Скористайся нашим конструктором для створення ідеальної конфігурації. 
+                Автоматична перевірка сумісності компонентів!
+            </p>
+            <a href="{{ url_for('builder') }}" class="btn btn-primary btn-lg btn-glow-animate">
+                <span>⚙️</span> Відкрити конструктор ПК
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Features -->
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Чому обирають нас</h2>
+        </div>
+        
+        <div class="categories-grid" data-stagger>
+            <div class="card" style="padding: 2rem; text-align: center; border: 1px solid rgba(0, 206, 201, 0.2);">
+                <span style="font-size: 3rem; display: block; margin-bottom: 1rem; filter: drop-shadow(0 0 10px rgba(0, 206, 201, 0.5));">🚚</span>
+                <h3>Швидка доставка</h3>
+                <p style="color: var(--text-secondary);">Доставка по всій Україні протягом 1-3 днів</p>
+            </div>
+            
+            <div class="card" style="padding: 2rem; text-align: center; border: 1px solid rgba(108, 92, 231, 0.2);">
+                <span style="font-size: 3rem; display: block; margin-bottom: 1rem; filter: drop-shadow(0 0 10px rgba(108, 92, 231, 0.5));">🛡️</span>
+                <h3>Гарантія</h3>
+                <p style="color: var(--text-secondary);">Офіційна гарантія від виробника на всі товари</p>
+            </div>
+            
+            <div class="card" style="padding: 2rem; text-align: center; border: 1px solid rgba(253, 121, 168, 0.2);">
+                <span style="font-size: 3rem; display: block; margin-bottom: 1rem; filter: drop-shadow(0 0 10px rgba(253, 121, 168, 0.5));">💬</span>
+                <h3>Підтримка 24/7</h3>
+                <p style="color: var(--text-secondary);">Наші експерти завжди готові допомогти</p>
+            </div>
+            
+            <div class="card" style="padding: 2rem; text-align: center; border: 1px solid rgba(253, 203, 110, 0.2);">
+                <span style="font-size: 3rem; display: block; margin-bottom: 1rem; filter: drop-shadow(0 0 10px rgba(253, 203, 110, 0.5));">💳</span>
+                <h3>Зручна оплата</h3>
+                <p style="color: var(--text-secondary);">Оплата картою, готівкою або розстрочка</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

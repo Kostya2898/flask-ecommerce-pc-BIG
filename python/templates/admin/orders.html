@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Замовлення - Ігрофікс ПК{% endblock %}
+
+{% block content %}
+<section class="section" style="padding-top: 100px;">
+    <div class="container">
+        <div class="section-header">
+            <h1 class="section-title">📦 Замовлення</h1>
+        </div>
+        
+        <div class="card" style="padding: 0; overflow: hidden;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead style="background: var(--card-bg-hover);">
+                    <tr>
+                        <th style="padding: 1rem;">ID</th>
+                        <th style="padding: 1rem;">Дата</th>
+                        <th style="padding: 1rem;">Клієнт</th>
+                        <th style="padding: 1rem;">Телефон</th>
+                        <th style="padding: 1rem;">Сума</th>
+                        <th style="padding: 1rem;">Статус</th>
+                        <th style="padding: 1rem;">Оплата</th>
+                        <th style="padding: 1rem;">Дії</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                        <td style="padding: 1rem;">#{{ order.id }}</td>
+                        <td style="padding: 1rem;">{{ order.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
+                        <td style="padding: 1rem;">{{ order.user.username if order.user else 'Гість' }}</td>
+                        <td style="padding: 1rem;">{{ order.contact_phone or '-' }}</td>
+                        <td style="padding: 1rem; color: var(--primary-light);">{{ "{:,.0f}".format(order.total_price).replace(",", " ") }} ₴</td>
+                        <td style="padding: 1rem;">
+                            {% if order.status == 'pending' %}
+                            <span class="badge" style="background: #fdcb6e; color: #000;">Очікує</span>
+                            {% elif order.status == 'processing' %}
+                            <span class="badge" style="background: #74b9ff; color: #000;">Обробляється</span>
+                            {% elif order.status == 'shipped' %}
+                            <span class="badge" style="background: #a29bfe; color: #000;">Відправлено</span>
+                            {% elif order.status == 'delivered' %}
+                            <span class="badge" style="background: #00b894; color: #000;">Доставлено</span>
+                            {% elif order.status == 'cancelled' %}
+                            <span class="badge" style="background: #ff7675; color: #000;">Скасовано</span>
+                            {% else %}
+                            <span class="badge badge-new">{{ order.status }}</span>
+                            {% endif %}
+                        </td>
+                        <td style="padding: 1rem;">{{ order.payment_method }}</td>
+                        <td style="padding: 1rem;">
+                            <a href="{{ url_for('admin_order_detail', order_id=order.id) }}" class="btn btn-secondary btn-sm">👁️</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{% endblock %}
+{% block extra_nav %}
+<a href="{{ url_for('admin') }}" class="btn btn-secondary">📊</a>
+<a href="{{ url_for('admin_products') }}" class="btn btn-secondary">📦</a>
+{% endblock %}

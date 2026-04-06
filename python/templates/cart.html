@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block title %}Кошик - Ігрофікс ПК{% endblock %}
+
+{% block content %}
+<section class="section" style="padding-top: 100px;">
+    <div class="container">
+        <div class="section-header">
+            <h1 class="section-title">🛒 Кошик</h1>
+            <p class="section-subtitle">Перегляньте обрані товари перед оформленням замовлення</p>
+        </div>
+        
+        {% if items %}
+        <div style="display: grid; grid-template-columns: 1fr 400px; gap: 2rem;">
+            <!-- Cart Items -->
+            <div>
+                <div class="card">
+                    {% for item in items %}
+                    <div class="cart-item" style="
+                        display: flex;
+                        gap: 1.5rem;
+                        padding: 1.5rem;
+                        border-bottom: 1px solid rgba(255,255,255,0.05);
+                        align-items: center;
+                    " data-product-id="{{ item.product.id }}">
+                        <div style="
+                            width: 100px;
+                            height: 100px;
+                            background: var(--card-bg-hover);
+                            border-radius: 12px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                        ">
+                            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width: 60px; height: 60px; opacity: 0.5;">
+                                <rect x="15" y="15" width="70" height="70" rx="8" fill="none" stroke="currentColor" stroke-width="2"/>
+                                <circle cx="50" cy="50" r="20" fill="none" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                        </div>
+                        
+                        <div style="flex: 1;">
+                            <p style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">{{ item.product.brand or 'Generic' }}</p>
+                            <h3 style="font-size: 1.1rem; margin: 0.25rem 0;">{{ item.product.name }}</h3>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem;">
+                                {{ "{:,.0f}".format(item.product.price).replace(",", " ") }} ₴ × {{ item.quantity }}
+                            </p>
+                        </div>
+                        
+                        <div style="text-align: right;">
+                            <p style="font-size: 1.25rem; font-weight: 700; color: var(--primary-light); margin-bottom: 0.5rem;">
+                                {{ "{:,.0f}".format(item.subtotal).replace(",", " ") }} ₴
+                            </p>
+                            
+                            <div style="display: flex; align-items: center; gap: 0.5rem; justify-content: flex-end;">
+                                <button class="btn btn-secondary btn-sm" onclick="updateQuantity({{ item.product.id }}, {{ item.quantity - 1 }})">-</button>
+                                <span style="width: 40px; text-align: center; font-weight: 600;">{{ item.quantity }}</span>
+                                <button class="btn btn-secondary btn-sm" onclick="updateQuantity({{ item.product.id }}, {{ item.quantity + 1 }})">+</button>
+                            </div>
+                            
+                            <button class="btn btn-danger btn-sm mt-2" onclick="removeFromCart({{ item.product.id }})">
+                                <span>🗑️</span> Видалити
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    
+                    <div style="padding: 1.5rem;">
+                        <button class="btn btn-secondary" onclick="clearCart()">
+                            <span>🗑️</span> Очистити кошик
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <a href="{{ url_for('catalog') }}" class="btn btn-secondary">
+                        <span>←</span> Продовжити покупки
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Order Summary -->
+            <div>
+                <div class="card" style="padding: 2rem; position: sticky; top: 100px;">
+                    <h3 style="margin-bottom: 1.5rem;">📋 Підсумок замовлення</h3>
+                    
+                    <div style="margin-bottom: 1.5rem;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+                            <span style="color: var(--text-secondary);">Товари ({{ items|length }})</span>
+                            <span>{{ "{:,.0f}".format(total).replace(",", " ") }} ₴</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+                            <span style="color: var(--text-secondary);">Доставка</span>
+                            <span style="color: var(--success);">Безкоштовно</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+                            <span style="color: var(--text-secondary);">Знижка</span>
+                            <span style="color: var(--success);">-0 ₴</span>
+                        </div>
+                    </div>
+                    
+                    <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem; margin-bottom: 1.5rem;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <span style="font-size: 1.1rem; font-weight: 600;">Всього:</span>
+                            <span id="cartTotal" style="font-size: 1.5rem; font-weight: 700; color: var(--primary-light);">
+                                {{ "{:,.0f}".format(total).replace(",", " ") }} ₴
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <a href="{{ url_for('checkout') }}" class="btn btn-primary btn-lg w-100">
+                        <span>💳</span> Оформити замовлення
+                    </a>
+                    
+                    <!-- Promo Code -->
+                    <div class="mt-4">
+                        <label class="form-label">Промокод</label>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <input type="text" class="form-control" placeholder="Введіть промокод">
+                            <button class="btn btn-secondary">Застосувати</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Benefits -->
+                    <div style="margin-top: 2rem; padding: 1rem; background: var(--card-bg-hover); border-radius: 12px;">
+                        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+                            <span style="font-size: 1.25rem;">🚚</span>
+                            <span style="font-size: 0.9rem; color: var(--text-secondary);">Безкоштовна доставка від 5000 ₴</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+                            <span style="font-size: 1.25rem;">🛡️</span>
+                            <span style="font-size: 0.9rem; color: var(--text-secondary);">Гарантія 24 місяці</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <span style="font-size: 1.25rem;">💬</span>
+                            <span style="font-size: 0.9rem; color: var(--text-secondary);">Підтримка 24/7</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        {% else %}
+        <!-- Empty Cart -->
+        <div class="card" style="padding: 4rem; text-align: center; max-width: 600px; margin: 0 auto;">
+            <span style="font-size: 5rem; display: block; margin-bottom: 1rem;">🛒</span>
+            <h2 style="margin-bottom: 1rem;">Кошик порожній</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                Додайте товари до кошика, щоб оформити замовлення
+            </p>
+            <a href="{{ url_for('catalog') }}" class="btn btn-primary btn-lg">
+                <span>🛍️</span> Переглянути каталог
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

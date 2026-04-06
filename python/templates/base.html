@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Ігрофікс ПК - Інтернет-магазин ігрових комп'ютерів та комплектуючих">
+    <title>{% block title %}Ігрофікс ПК - Геймерський інтернет-магазин{% endblock %}</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/animations.css') }}">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Grid Lightning Background -->
+    <div class="grid-lightning"></div>
+    
+    <!-- Background Gradient -->
+    <div class="bg-gradient"></div>
+    
+    <!-- Lightning Flash Overlay -->
+    <div class="lightning-overlay" id="lightningOverlay">
+        <div class="lightning-flash"></div>
+    </div>
+    
+    <!-- Particles Container -->
+    <div class="particles-container" id="particlesContainer"></div>
+    
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="navbar-content">
+            <a href="{{ url_for('index') }}" class="logo">
+                <span class="logo-icon">⚡</span>
+                <span>Ігрофікс ПК</span>
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="{{ url_for('index') }}" class="nav-link {% if request.endpoint == 'index' %}active{% endif %}" data-i18n="home">Головна</a></li>
+                <li><a href="{{ url_for('catalog') }}" class="nav-link {% if request.endpoint == 'catalog' %}active{% endif %}" data-i18n="catalog">Каталог</a></li>
+                <li><a href="{{ url_for('builder') }}" class="nav-link {% if request.endpoint == 'builder' %}active{% endif %}" data-i18n="builder">Конструктор ПК</a></li>
+                <li><a href="{{ url_for('catalog', slug='gpu') }}" class="nav-link">Відеокарти</a></li>
+                <li><a href="{{ url_for('catalog', slug='cpu') }}" class="nav-link">Процесори</a></li>
+            </ul>
+            
+            <div class="nav-actions">
+                {% if current_user.is_authenticated %}
+                    {% if current_user.is_admin() %}
+                        <a href="{{ url_for('admin') }}" class="btn btn-secondary btn-sm">Адмінка</a>
+                    {% endif %}
+                    <a href="{{ url_for('profile') }}" class="nav-link">
+                        <span>👤</span> {{ current_user.username }}
+                    </a>
+                    <a href="{{ url_for('logout') }}" class="btn btn-secondary btn-sm">Вихід</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="btn btn-secondary btn-sm">Вхід</a>
+                    <a href="{{ url_for('register') }}" class="btn btn-primary btn-sm">Реєстрація</a>
+                {% endif %}
+                
+                <!-- Theme & Language Toggles -->
+                <button id="themeToggle" class="btn btn-secondary btn-sm theme-btn" title="Перемкнути тему" data-i18n-title="Toggle theme">
+                    <span class="theme-icon">🌙</span>
+                </button>
+                <button id="langToggle" class="btn btn-secondary btn-sm lang-btn" title="🇺🇦 Українська / 🇺🇸 English">
+                    <span id="langIcon">🇺🇦</span>
+                </button>
+                
+                <a href="{{ url_for('cart') }}" class="cart-btn" id="cartBtn">
+                    <span>🛒</span>
+                    <span class="cart-badge" id="cartBadge" style="display: {% if session.get('cart') and session.get('cart')|length > 0 %}flex{% else %}none{% endif %}">
+                        {{ session.get('cart', {})|length if session.get('cart') else 0 }}
+                    </span>
+                </a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Flash Messages -->
+    <div class="flash-messages" id="flashMessages">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}" data-category="{{ category }}">
+                        <span>
+                            {% if category == 'success' %}✅
+                            {% elif category == 'danger' %}❌
+                            {% elif category == 'warning' %}⚠️
+                            {% elif category == 'info' %}ℹ️
+                            {% endif %}
+                        </span>
+                        <span>{{ message }}</span>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+    
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h4>⚡ Ігрофікс ПК</h4>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem;">
+                        Найкращий вибір ігрових комп'ютерів та комплектуючих для справжніх геймерів.
+                    </p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Каталог</h4>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('catalog', slug='cpu') }}">Процесори</a></li>
+                        <li><a href="{{ url_for('catalog', slug='gpu') }}">Відеокарти</a></li>
+                        <li><a href="{{ url_for('catalog', slug='ram') }}">Оперативна пам'ять</a></li>
+                        <li><a href="{{ url_for('catalog', slug='storage') }}">Накопичувачі</a></li>
+                        <li><a href="{{ url_for('catalog', slug='case') }}">Корпуси</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Послуги</h4>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('builder') }}">Конструктор ПК</a></li>
+                        <li><a href="#">Доставка</a></li>
+                        <li><a href="#">Гарантія</a></li>
+                        <li><a href="#">Підтримка</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Контакти</h4>
+                    <ul class="footer-links">
+                        <li>📞 +380 (99) 123-45-67</li>
+                        <li>📧 info@igrofix.pc</li>
+                        <li>📍 Київ, Україна</li>
+                        <li>⏰ Пн-Пт: 9:00 - 20:00</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 Ігрофікс ПК. Всі права захищені.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

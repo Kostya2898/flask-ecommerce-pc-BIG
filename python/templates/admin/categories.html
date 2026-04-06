@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Категорії - Ігрофікс ПК{% endblock %}
+
+{% block content %}
+<section class="section" style="padding-top: 100px;">
+    <div class="container">
+        <h1 class="section-title">📁 Категорії</h1>
+        
+        <a href="{{ url_for('admin_add_category') }}" class="btn btn-primary mb-4">➕ Додати категорію</a>
+        
+        <div class="card" style="padding: 0;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead style="background: var(--card-bg-hover);">
+                    <tr>
+                        <th style="padding: 1rem;">ID</th>
+                        <th style="padding: 1rem;">Назва</th>
+                        <th style="padding: 1rem;">URL</th>
+                        <th style="padding: 1rem;">Товарів</th>
+                        <th style="padding: 1rem;">Дії</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for category in categories %}
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                        <td style="padding: 1rem;">{{ category.id }}</td>
+                        <td style="padding: 1rem;">{{ category.name }}</td>
+                        <td style="padding: 1rem; color: var(--text-muted);">{{ category.slug }}</td>
+                        <td style="padding: 1rem;">{{ category.products|length }}</td>
+                        <td style="padding: 1rem;">
+                            <a href="{{ url_for('admin_edit_category', category_id=category.id) }}" class="btn btn-secondary btn-sm">✏️</a>
+                            <form method="POST" action="{{ url_for('admin_delete_category', category_id=category.id) }}" style="display: inline;" onsubmit="return confirm('Ви впевнені?')">
+                                <button type="submit" class="btn btn-danger btn-sm">🗑️</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{% endblock %}

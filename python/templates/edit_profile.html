@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Редагування профілю - Ігрофікс ПК{% endblock %}
+
+{% block content %}
+<section class="section" style="padding-top: 120px;">
+    <div class="container">
+        <div class="card" style="padding: 3rem; max-width: 600px; margin: 0 auto;">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <span style="font-size: 4rem;">⚙️</span>
+                <h1 style="margin-top: 1rem;">Налаштування профілю</h1>
+            </div>
+            
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                
+                <div class="form-group">
+                    <label class="form-label">{{ form.username.label }}</label>
+                    {{ form.username(class="form-control") }}
+                    {% if form.username.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.username.errors[0] }}
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">{{ form.email.label }}</label>
+                    {{ form.email(class="form-control") }}
+                    {% if form.email.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.email.errors[0] }}
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">{{ form.phone.label }}</label>
+                    {{ form.phone(class="form-control", placeholder="+380 (XX) XXX-XX-XX") }}
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">{{ form.address.label }}</label>
+                    {{ form.address(class="form-control", rows=3) }}
+                </div>
+                
+                <div style="display: flex; gap: 1rem;">
+                    <a href="{{ url_for('profile') }}" class="btn btn-secondary flex-grow-1">
+                        Скасувати
+                    </a>
+                    {{ form.submit(class="btn btn-primary flex-grow-1") }}
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

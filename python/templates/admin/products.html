@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}Керування товарами - Ігрофікс ПК{% endblock %}
+
+{% block content %}
+<section class="section" style="padding-top: 100px;">
+    <div class="container">
+        <div class="section-header">
+            <h1 class="section-title">📦 Керування товарами</h1>
+        </div>
+        
+        <!-- Admin Navigation -->
+        <div style="display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap;">
+            <a href="{{ url_for('admin') }}" class="btn btn-secondary">
+                <span>📊</span> Статистика
+            </a>
+            <a href="{{ url_for('admin_products') }}" class="btn btn-primary">
+                <span>📦</span> Товари
+            </a>
+            <a href="{{ url_for('admin_categories') }}" class="btn btn-secondary">
+                <span>📁</span> Категорії
+            </a>
+            <a href="{{ url_for('admin_orders') }}" class="btn btn-secondary">
+                <span>📦</span> Замовлення
+            </a>
+            <a href="{{ url_for('admin_users') }}" class="btn btn-secondary">
+                <span>👥</span> Користувачі
+            </a>
+        </div>
+        
+        <!-- Add Product Button -->
+        <div style="margin-bottom: 2rem;">
+            <a href="{{ url_for('admin_add_product') }}" class="btn btn-primary">
+                <span>➕</span> Додати товар
+            </a>
+        </div>
+        
+        <!-- Products Table -->
+        <div class="card" style="padding: 0; overflow: hidden;">
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead style="background: var(--card-bg-hover);">
+                        <tr>
+                            <th style="text-align: left; padding: 1rem; color: var(--text-muted);">Фото</th>
+                            <th style="text-align: left; padding: 1rem; color: var(--text-muted);">Назва</th>
+                            <th style="text-align: left; padding: 1rem; color: var(--text-muted);">Категорія</th>
+                            <th style="text-align: left; padding: 1rem; color: var(--text-muted);">Ціна</th>
+                            <th style="text-align: left; padding: 1rem; color: var(--text-muted);">Залишок</th>
+                            <th style="text-align: left; padding: 1rem; color: var(--text-muted);">Статус</th>
+                            <th style="text-align: left; padding: 1rem; color: var(--text-muted);">Дії</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in products %}
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 1rem;">
+                                {% if product.image and product.image != 'placeholder.png' %}
+                                <div style="width: 60px; height: 60px; border-radius: 8px; overflow: hidden; background: var(--card-bg-hover);">
+                                    <img src="{{ url_for('static', filename='images/' + product.image) }}" alt="{{ product.name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                </div>
+                                {% else %}
+                                <div style="width: 60px; height: 60px; border-radius: 8px; background: var(--card-bg-hover); display: flex; align-items: center; justify-content: center;">
+                                    <span style="font-size: 1.5rem;">📦</span>
+                                </div>
+                                {% endif %}
+                            </td>
+                            <td style="padding: 1rem;">
+                                <strong>{{ product.name }}</strong>
+                                <br><span style="font-size: 0.8rem; color: var(--text-muted);">{{ product.brand or '' }}</span>
+                            </td>
+                            <td style="padding: 1rem;">{{ product.category.name if product.category else '-' }}</td>
+                            <td style="padding: 1rem; color: var(--primary-light);">
+                                {{ "{:,.0f}".format(product.price).replace(",", " ") }} ₴
+                            </td>
+                            <td style="padding: 1rem;">
+                                {% if product.stock > 10 %}
+                                <span style="color: var(--success);">{{ product.stock }}</span>
+                                {% elif product.stock > 0 %}
+                                <span style="color: var(--warning);">{{ product.stock }}</span>
+                                {% else %}
+                                <span style="color: var(--danger);">0</span>
+                                {% endif %}
+                            </td>
+                            <td style="padding: 1rem;">
+                                {% if product.featured %}
+                                <span class="badge badge-featured">Рекомендований</span>
+                                {% endif %}
+                                {% if product.bestseller %}
+                                <span class="badge badge-bestseller">Бестселер</span>
+                                {% endif %}
+                                {% if product.new %}
+                                <span class="badge badge-new">Новинка</span>
+                                {% endif %}
+                            </td>
+                            <td style="padding: 1rem;">
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <a href="{{ url_for('admin_edit_product', product_id=product.id) }}" class="btn btn-secondary btn-sm">
+                                        <span>✏️</span>
+                                    </a>
+                                    <form method="POST" action="{{ url_for('admin_delete_product', product_id=product.id) }}" style="display: inline;" onsubmit="return confirm('Ви впевнені?')">
+                                        <button type="submit" class="btn btn-danger btn-sm">
+                                            <span>🗑️</span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

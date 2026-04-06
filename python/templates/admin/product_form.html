@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} - Ігрофікс ПК{% endblock %}
+
+{% block content %}
+<section class="section" style="padding-top: 100px;">
+    <div class="container">
+        <div class="section-header">
+            <h1 class="section-title">{{ title }}</h1>
+        </div>
+        
+        <!-- Admin Navigation -->
+        <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+            <a href="{{ url_for('admin') }}" class="btn btn-secondary">📊 Статистика</a>
+            <a href="{{ url_for('admin_products') }}" class="btn btn-secondary">📦 Товари</a>
+            <a href="{{ url_for('admin_categories') }}" class="btn btn-secondary">📁 Категорії</a>
+            <a href="{{ url_for('admin_orders') }}" class="btn btn-secondary">📦 Замовлення</a>
+        </div>
+        
+        <div class="card" style="padding: 2rem; max-width: 800px;">
+            <form method="POST" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+                
+                <div class="form-group">
+                    <label class="form-label">{{ form.name.label }}</label>
+                    {{ form.name(class="form-control") }}
+                    {% if form.name.errors %}<div class="invalid-feedback d-block">{{ form.name.errors[0] }}</div>{% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">{{ form.slug.label }}</label>
+                    {{ form.slug(class="form-control") }}
+                    {% if form.slug.errors %}<div class="invalid-feedback d-block">{{ form.slug.errors[0] }}</div>{% endif %}
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label class="form-label">{{ form.category_id.label }}</label>
+                        {{ form.category_id(class="form-control") }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">{{ form.brand.label }}</label>
+                        {{ form.brand(class="form-control") }}
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label class="form-label">{{ form.price.label }}</label>
+                        {{ form.price(class="form-control") }}
+                        {% if form.price.errors %}<div class="invalid-feedback d-block">{{ form.price.errors[0] }}</div>{% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">{{ form.old_price.label }}</label>
+                        {{ form.old_price(class="form-control") }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">{{ form.stock.label }}</label>
+                        {{ form.stock(class="form-control") }}
+                        {% if form.stock.errors %}<div class="invalid-feedback d-block">{{ form.stock.errors[0] }}</div>{% endif %}
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">{{ form.description.label }}</label>
+                    {{ form.description(class="form-control", rows=4) }}
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">{{ form.image.label }}</label>
+                    {{ form.image(class="form-control") }}
+                    {% if form.image.errors %}<div class="invalid-feedback d-block">{{ form.image.errors[0] }}</div>{% endif %}
+                    <small style="color: var(--text-muted);">Підтримувані формати: JPG, PNG, GIF. Макс. 5 МБ</small>
+                </div>
+                
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                        {{ form.featured() }}
+                        <span>{{ form.featured.label.text }}</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                        {{ form.bestseller() }}
+                        <span>{{ form.bestseller.label.text }}</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                        {{ form.new() }}
+                        <span>{{ form.new.label.text }}</span>
+                    </label>
+                </div>
+                
+                <div style="display: flex; gap: 1rem;">
+                    <a href="{{ url_for('admin_products') }}" class="btn btn-secondary">Скасувати</a>
+                    {{ form.submit(class="btn btn-primary") }}
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

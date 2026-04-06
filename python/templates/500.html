@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Помилка сервера - Ігрофікс ПК{% endblock %}
+
+{% block content %}
+<section class="section" style="padding-top: 120px; min-height: 60vh; display: flex; align-items: center;">
+    <div class="container">
+        <div class="card" style="padding: 4rem; text-align: center; max-width: 600px; margin: 0 auto;">
+            <span style="font-size: 6rem; display: block; margin-bottom: 1rem;">500</span>
+            <h1 style="margin-bottom: 1rem;">Внутрішня помилка сервера</h1>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                Вибачте, але щось пішло не так. Наші технічні спеціалісти вже працюють над виправленням проблеми.
+            </p>
+            <div style="display: flex; gap: 1rem; justify-content: center;">
+                <a href="{{ url_for('index') }}" class="btn btn-primary">
+                    <span>🏠</span> На головну
+                </a>
+                <a href="javascript:location.reload()" class="btn btn-secondary">
+                    <span>🔄</span> Оновити сторінку
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

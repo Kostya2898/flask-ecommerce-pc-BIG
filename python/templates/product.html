@@ -1,0 +1,274 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }} - Ігрофікс ПК{% endblock %}
+
+{% block content %}
+<section class="section" style="padding-top: 100px;">
+    <div class="container">
+        <!-- Breadcrumbs -->
+        <nav style="margin-bottom: 2rem; color: var(--text-secondary);">
+            <a href="{{ url_for('index') }}" style="color: var(--primary-light);">Головна</a>
+            <span style="margin: 0 0.5rem;">/</span>
+            <a href="{{ url_for('catalog') }}" style="color: var(--primary-light);">Каталог</a>
+            <span style="margin: 0 0.5rem;">/</span>
+            <a href="{{ url_for('catalog', slug=product.category.slug if product.category else '') }}" style="color: var(--primary-light);">{{ product.category.name if product.category else 'Товари' }}</a>
+            <span style="margin: 0 0.5rem;">/</span>
+            <span>{{ product.name }}</span>
+        </nav>
+        
+        <div class="card" style="padding: 2rem;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;">
+                <!-- Product Image -->
+                <div>
+                    <div class="card" style="padding: 2rem; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); margin-bottom: 1rem; border: 1px solid rgba(108, 92, 231, 0.3);">
+                        <div style="aspect-ratio: 1; display: flex; align-items: center; justify-content: center;">
+                            {% set cat_slug = product.category.slug if product.category else 'default' %}
+                            
+                            {% if cat_slug == 'cpu' %}
+                            <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" style="width: 300px; height: 300px;">
+                                <defs>
+                                    <linearGradient id="cpuMainGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#2d3436"/>
+                                        <stop offset="50%" style="stop-color:#636e72"/>
+                                        <stop offset="100%" style="stop-color:#2d3436"/>
+                                    </linearGradient>
+                                    <filter id="cpuGlow">
+                                        <feDropShadow dx="0" dy="0" stdDeviation="10" flood-color="#6c5ce7" flood-opacity="0.5"/>
+                                    </filter>
+                                </defs>
+                                <rect x="60" y="60" width="280" height="280" rx="12" fill="url(#cpuMainGrad)" filter="url(#cpuGlow)" stroke="#6c5ce7" stroke-width="3"/>
+                                <rect x="100" y="100" width="200" height="200" rx="6" fill="#1a1a2e" stroke="#6c5ce7" stroke-width="2"/>
+                                <text x="200" y="190" text-anchor="middle" fill="#6c5ce7" font-size="36" font-weight="bold">{{ product.brand|upper if product.brand else 'INTEL' }}</text>
+                                <text x="200" y="240" text-anchor="middle" fill="#a0a0b0" font-size="14">{{ product.name.split()[-1] if product.name else '14900K' }}</text>
+                                <!-- Pins -->
+                                {% for i in range(12) %}
+                                <rect x="{{ 65 + i * 22 }}" y="335" width="4" height="12" fill="#b0b0b0"/>
+                                <rect x="{{ 65 + i * 22 }}" y="55" width="4" height="12" fill="#b0b0b0"/>
+                                {% endfor %}
+                                {% for i in range(7) %}
+                                <rect x="55" y="{{ 75 + i * 38 }}" width="12" height="4" fill="#b0b0b0"/>
+                                <rect x="335" y="{{ 75 + i * 38 }}" width="12" height="4" fill="#b0b0b0"/>
+                                {% endfor %}
+                            </svg>
+                            
+                            {% elif cat_slug == 'gpu' %}
+                            <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" style="width: 350px; height: 280px;">
+                                <defs>
+                                    <linearGradient id="gpuMainGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#1a1a2e"/>
+                                        <stop offset="100%" style="stop-color:#16213e"/>
+                                    </linearGradient>
+                                    <filter id="gpuGlow">
+                                        <feDropShadow dx="0" dy="0" stdDeviation="10" flood-color="#fd79a8" flood-opacity="0.5"/>
+                                    </filter>
+                                </defs>
+                                <rect x="20" y="60" width="360" height="180" rx="10" fill="url(#gpuMainGrad)" filter="url(#gpuGlow)" stroke="#fd79a8" stroke-width="3"/>
+                                <rect x="50" y="85" width="120" height="130" rx="6" fill="#2d3436"/>
+                                <circle cx="110" cy="150" r="45" fill="none" stroke="#fd79a8" stroke-width="3"/>
+                                <circle cx="110" cy="150" r="28" fill="#fd79a8" opacity="0.3"/>
+                                <circle cx="110" cy="150" r="15" fill="#fd79a8" opacity="0.5"/>
+                                <circle cx="270" cy="150" r="55" fill="none" stroke="#6c5ce7" stroke-width="3"/>
+                                <circle cx="270" cy="150" r="35" fill="#6c5ce7" opacity="0.3"/>
+                                <circle cx="270" cy="150" r="18" fill="#6c5ce7" opacity="0.5"/>
+                                <circle cx="340" cy="150" r="35" fill="none" stroke="#00cec9" stroke-width="3"/>
+                                <circle cx="340" cy="150" r="20" fill="#00cec9" opacity="0.3"/>
+                                <rect x="50" y="225" width="300" height="12" rx="3" fill="#2d3436"/>
+                                <rect x="50" y="225" width="250" height="12" rx="3" fill="#fd79a8" opacity="0.3"/>
+                                <text x="200" y="275" text-anchor="middle" fill="#fd79a8" font-size="20" font-weight="bold">{{ product.brand|upper if product.brand else 'NVIDIA' }}</text>
+                            </svg>
+                            
+                            {% elif cat_slug == 'ram' %}
+                            <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" style="width: 350px; height: 280px;">
+                                <defs>
+                                    <linearGradient id="ramMainGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#00cec9"/>
+                                        <stop offset="100%" style="stop-color:#6c5ce7"/>
+                                    </linearGradient>
+                                </defs>
+                                <rect x="50" y="40" width="70" height="200" rx="6" fill="#1a1a2e" stroke="url(#ramMainGrad)" stroke-width="3"/>
+                                <rect x="130" y="40" width="70" height="200" rx="6" fill="#1a1a2e" stroke="url(#ramMainGrad)" stroke-width="3"/>
+                                <rect x="210" y="40" width="70" height="200" rx="6" fill="#1a1a2e" stroke="url(#ramMainGrad)" stroke-width="3"/>
+                                <rect x="290" y="40" width="70" height="200" rx="6" fill="#1a1a2e" stroke="url(#ramMainGrad)" stroke-width="3"/>
+                                <!-- Chips -->
+                                <rect x="65" y="70" width="40" height="25" fill="#2d3436" rx="2"/>
+                                <rect x="65" y="105" width="40" height="25" fill="#2d3436" rx="2"/>
+                                <rect x="65" y="140" width="40" height="25" fill="#2d3436" rx="2"/>
+                                <rect x="145" y="70" width="40" height="25" fill="#2d3436" rx="2"/>
+                                <rect x="145" y="105" width="40" height="25" fill="#2d3436" rx="2"/>
+                                <rect x="145" y="140" width="40" height="25" fill="#2d3436" rx="2"/>
+                                <rect x="225" y="70" width="40" height="25" fill="#2d3436" rx="2"/>
+                                <rect x="225" y="105" width="40" height="25" fill="#2d3436" rx="2"/>
+                                <rect x="225" y="140" width="40" height="25" fill="#2d3436" rx="2"/>
+                                <rect x="305" y="70" width="40" height="25" fill="#2d3436" rx="2"/>
+                                <rect x="305" y="105" width="40" height="25" fill="#2d3436" rx="2"/>
+                                <rect x="305" y="140" width="40" height="25" fill="#2d3436" rx="2"/>
+                                <!-- RGB strip -->
+                                <rect x="50" y="30" width="310" height="10" fill="url(#ramMainGrad)" rx="3">
+                                    <animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite"/>
+                                </rect>
+                                <text x="200" y="280" text-anchor="middle" fill="#00cec9" font-size="18" font-weight="bold">DDR5 32GB RGB</text>
+                            </svg>
+                            
+                            {% else %}
+                            <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" style="width: 300px; height: 300px;">
+                                <defs>
+                                    <linearGradient id="prodMainGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#6c5ce7"/>
+                                        <stop offset="100%" style="stop-color:#00cec9"/>
+                                    </linearGradient>
+                                </defs>
+                                <rect x="50" y="50" width="300" height="300" rx="20" fill="#1a1a2e" stroke="url(#prodMainGrad)" stroke-width="4"/>
+                                <circle cx="200" cy="200" r="100" fill="none" stroke="url(#prodMainGrad)" stroke-width="4"/>
+                                <circle cx="200" cy="200" r="60" fill="url(#prodMainGrad)" opacity="0.3"/>
+                                <text x="200" y="195" text-anchor="middle" fill="#a0a0b0" font-size="20">{{ product.brand|upper if product.brand else 'BRAND' }}</text>
+                                <text x="200" y="230" text-anchor="middle" fill="#6c5ce7" font-size="14" font-weight="bold">{{ product.name[:15] if product.name else 'PRODUCT' }}</text>
+                            </svg>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Specs Badges -->
+                    {% set specs = product.get_specs() %}
+                    {% if specs %}
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                        {% for key, value in specs.items() %}
+                        <span class="badge" style="background: var(--card-bg-hover); color: var(--text-secondary); border: 1px solid rgba(255,255,255,0.1); padding: 0.5rem 1rem;">
+                            {{ key }}: <strong style="color: var(--primary-light);">{{ value }}</strong>
+                        </span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Product Info -->
+                <div>
+                    <p class="brand" style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); margin-bottom: 0.5rem;">
+                        {{ product.brand or 'Generic' }}
+                    </p>
+                    
+                    <h1 style="font-size: 2rem; margin-bottom: 1rem;">{{ product.name }}</h1>
+                    
+                    <div style="margin-bottom: 1.5rem;">
+                        <span style="font-size: 2.5rem; font-weight: 700; color: var(--primary-light); text-shadow: 0 0 20px rgba(108, 92, 231, 0.5);">
+                            {{ "{:,.0f}".format(product.price).replace(",", " ") }} ₴
+                        </span>
+                        {% if product.old_price and product.old_price > product.price %}
+                        <span style="font-size: 1.25rem; color: var(--text-muted); text-decoration: line-through; margin-left: 1rem;">
+                            {{ "{:,.0f}".format(product.old_price).replace(",", " ") }} ₴
+                        </span>
+                        <span class="badge badge-sale" style="margin-left: 0.5rem; font-size: 1rem; padding: 0.5rem 1rem;">
+                            -{{ ((1 - product.price / product.old_price) * 100)|round|int }}%
+                        </span>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Stock Status -->
+                    <p style="margin-bottom: 1.5rem;">
+                        {% if product.stock > 0 %}
+                        <span style="color: var(--success); font-size: 1.1rem;">✓ В наявності</span>
+                        <span style="color: var(--text-muted);"> - Залишок: {{ product.stock }} шт.</span>
+                        {% else %}
+                        <span style="color: var(--danger); font-size: 1.1rem;">✗ Немає в наявності</span>
+                        {% endif %}
+                    </p>
+                    
+                    <!-- Badges -->
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem;">
+                        {% if product.new %}
+                        <span class="badge badge-new">Новинка</span>
+                        {% endif %}
+                        {% if product.bestseller %}
+                        <span class="badge badge-bestseller">Бестселер</span>
+                        {% endif %}
+                        {% if product.featured %}
+                        <span class="badge badge-featured">Рекомендуємо</span>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Description -->
+                    {% if product.description %}
+                    <div style="margin-bottom: 2rem;">
+                        <h3 style="margin-bottom: 0.5rem;">Опис</h3>
+                        <p style="color: var(--text-secondary); line-height: 1.8;">{{ product.description }}</p>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Action Buttons -->
+                    <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+                        <button class="btn btn-primary btn-lg flex-grow-1 add-to-cart-btn" data-product-id="{{ product.id }}" onclick="addToCart({{ product.id }}, this)" {% if product.stock == 0 %}disabled style="opacity: 0.5;"{% endif %}>
+                            <span>🛒</span> Додати в кошик
+                        </button>
+                        <a href="{{ url_for('builder') }}" class="btn btn-secondary btn-lg">
+                            <span>⚙️</span> В конструктор
+                        </a>
+                    </div>
+                    
+                    <!-- Features -->
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; padding: 1.5rem; background: var(--card-bg-hover); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                        <div style="text-align: center;">
+                            <span style="font-size: 1.5rem;">🚚</span>
+                            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">Швидка доставка</p>
+                        </div>
+                        <div style="text-align: center;">
+                            <span style="font-size: 1.5rem;">🛡️</span>
+                            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">Гарантія 24 міс.</p>
+                        </div>
+                        <div style="text-align: center;">
+                            <span style="font-size: 1.5rem;">💬</span>
+                            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">Підтримка 24/7</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Specifications Table -->
+        {% if specs %}
+        <div class="card mt-5" style="padding: 2rem;">
+            <h2 style="margin-bottom: 1.5rem;">Технічні характеристики</h2>
+            <table style="width: 100%; border-collapse: collapse;">
+                <tbody>
+                    {% for key, value in specs.items() %}
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                        <td style="padding: 1rem; color: var(--text-secondary); width: 40%;">{{ key }}</td>
+                        <td style="padding: 1rem; font-weight: 500; color: var(--primary-light);">{{ value }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+        
+        <!-- Related Products -->
+        {% if related_products %}
+        <div class="mt-5">
+            <h2 style="margin-bottom: 1.5rem;">Схожі товари</h2>
+            <div class="products-grid" data-stagger>
+                {% for rel_product in related_products %}
+                <div class="card product-card">
+                    <div class="card-img">
+                        <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg" style="width: 150px; height: 120px;">
+                            <rect x="50" y="30" width="200" height="150" rx="10" fill="#1a1a2e" stroke="#6c5ce7" stroke-width="2"/>
+                            <circle cx="150" cy="100" r="40" fill="none" stroke="#6c5ce7" stroke-width="2"/>
+                            <circle cx="150" cy="100" r="20" fill="#6c5ce7" opacity="0.3"/>
+                        </svg>
+                    </div>
+                    <div class="card-body">
+                        <p class="brand">{{ rel_product.brand or 'Generic' }}</p>
+                        <h3 class="card-title">{{ rel_product.name }}</h3>
+                        <div class="price">{{ "{:,.0f}".format(rel_product.price).replace(",", " ") }} ₴</div>
+                        <div class="d-flex gap-2 mt-3">
+                            <button class="btn btn-primary btn-sm flex-grow-1 add-to-cart-btn" data-product-id="{{ rel_product.id }}" onclick="addToCart({{ rel_product.id }}, this)">
+                                <span>🛒</span> В кошик
+                            </button>
+                            <a href="{{ url_for('product', slug=rel_product.slug) }}" class="btn btn-secondary btn-sm"><span>👁️</span></a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

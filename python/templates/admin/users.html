@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Користувачі - Ігрофікс ПК{% endblock %}
+
+{% block content %}
+<section class="section" style="padding-top: 100px;">
+    <div class="container">
+        <h1 class="section-title">👥 Користувачі</h1>
+        
+        <div class="card" style="padding: 0; overflow: hidden;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead style="background: var(--card-bg-hover);">
+                    <tr>
+                        <th style="padding: 1rem;">ID</th>
+                        <th style="padding: 1rem;">Ім'я</th>
+                        <th style="padding: 1rem;">Email</th>
+                        <th style="padding: 1rem;">Роль</th>
+                        <th style="padding: 1rem;">Дата реєстрації</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                        <td style="padding: 1rem;">{{ user.id }}</td>
+                        <td style="padding: 1rem;">{{ user.username }}</td>
+                        <td style="padding: 1rem;">{{ user.email }}</td>
+                        <td style="padding: 1rem;">
+                            <span class="badge {% if user.is_admin() %}badge-sale{% else %}badge-new{% endif %}">
+                                {{ user.role }}
+                            </span>
+                        </td>
+                        <td style="padding: 1rem;">{{ user.created_at.strftime('%d.%m.%Y') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{% endblock %}

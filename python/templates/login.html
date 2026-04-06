@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Вхід - Ігрофікс ПК{% endblock %}
+
+{% block content %}
+<section class="section" style="padding-top: 120px; min-height: 80vh; display: flex; align-items: center;">
+    <div class="container">
+        <div class="card" style="padding: 3rem; max-width: 450px; margin: 0 auto;">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <span style="font-size: 4rem;">🔐</span>
+                <h1 style="margin-top: 1rem;">Вхід</h1>
+                <p style="color: var(--text-secondary);">Увійдіть в свій обліковий запис</p>
+            </div>
+            
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                
+                <div class="form-group">
+                    <label class="form-label">{{ form.email.label }}</label>
+                    {{ form.email(class="form-control", placeholder="your@email.com") }}
+                    {% if form.email.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.email.errors[0] }}
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">{{ form.password.label }}</label>
+                    {{ form.password(class="form-control", placeholder="Ваш пароль") }}
+                    {% if form.password.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.password.errors[0] }}
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        {{ form.remember() }}
+                        <span style="color: var(--text-secondary);">{{ form.remember.label.text }}</span>
+                    </label>
+                </div>
+                
+                {{ form.submit(class="btn btn-primary btn-lg w-100") }}
+            </form>
+            
+            <div style="text-align: center; margin-top: 2rem;">
+                <p style="color: var(--text-secondary);">
+                    Ще не маєте акаунту? 
+                    <a href="{{ url_for('register') }}" style="color: var(--primary-light); font-weight: 600;">Зареєструватися</a>
+                </p>
+            </div>
+            
+            <!-- Demo Accounts -->
+            <div style="margin-top: 2rem; padding: 1rem; background: var(--card-bg-hover); border-radius: 12px; font-size: 0.85rem;">
+                <p style="margin-bottom: 0.5rem; color: var(--text-muted);">Демо-акаунт адміністратора:</p>
+                <p style="color: var(--text-secondary);">Email: <code style="color: var(--primary-light);">admin@igrofix.pc</code></p>
+                <p style="color: var(--text-secondary);">Пароль: <code style="color: var(--primary-light);">admin123</code></p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

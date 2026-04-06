@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Сторінку не знайдено - Ігрофікс ПК{% endblock %}
+
+{% block content %}
+<section class="section" style="padding-top: 120px; min-height: 60vh; display: flex; align-items: center;">
+    <div class="container">
+        <div class="card" style="padding: 4rem; text-align: center; max-width: 600px; margin: 0 auto;">
+            <span style="font-size: 6rem; display: block; margin-bottom: 1rem;" class="glitch" data-text="404">404</span>
+            <h1 style="margin-bottom: 1rem;">Сторінку не знайдено</h1>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                Вибачте, але запитана сторінка не існує або була переміщена.
+            </p>
+            <div style="display: flex; gap: 1rem; justify-content: center;">
+                <a href="{{ url_for('index') }}" class="btn btn-primary">
+                    <span>🏠</span> На головну
+                </a>
+                <a href="{{ url_for('catalog') }}" class="btn btn-secondary">
+                    <span>🛍️</span> Каталог
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

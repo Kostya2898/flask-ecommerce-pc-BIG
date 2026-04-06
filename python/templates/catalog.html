@@ -1,0 +1,345 @@
+{% extends "base.html" %}
+
+{% block title %}Каталог товарів - Ігрофікс ПК{% endblock %}
+
+{% block content %}
+<section class="section" style="padding-top: 100px;">
+    <div class="container">
+        <!-- Breadcrumbs -->
+        <nav style="margin-bottom: 2rem; color: var(--text-secondary);">
+            <a href="{{ url_for('index') }}" style="color: var(--primary-light);">Головна</a>
+            <span style="margin: 0 0.5rem;">/</span>
+            <span>Каталог</span>
+        </nav>
+        
+        <div class="section-header">
+            <h1 class="section-title">Каталог товарів</h1>
+            <p class="section-subtitle">Оберіть найкращі компоненти для вашого ПК</p>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 280px 1fr; gap: 2rem;">
+            <!-- Filters Sidebar -->
+            <aside class="card" style="padding: 1.5rem; height: fit-content; position: sticky; top: 100px;">
+                <h3 style="margin-bottom: 1.5rem;">Фільтри</h3>
+                
+                <form method="GET" action="{{ url_for('catalog') }}" id="filterForm">
+                    <div class="form-group">
+                        <label class="form-label">Пошук</label>
+                        <input type="text" name="search" class="form-control" placeholder="Назва товару..." value="{{ search_query or '' }}">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Категорії</label>
+                        <select name="category" class="form-control">
+                            <option value="">Всі категорії</option>
+                            {% for cat in categories %}
+                            <option value="{{ cat.id }}" {% if current_category == cat.id %}selected{% endif %}>{{ cat.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Бренд</label>
+                        <select name="brand" class="form-control">
+                            <option value="">Всі бренди</option>
+                            {% for brand in brands %}
+                            <option value="{{ brand }}" {% if current_brand == brand %}selected{% endif %}>{{ brand }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Ціна</label>
+                        <div style="display: flex; gap: 1rem;">
+                            <input type="number" name="min_price" class="form-control" placeholder="Від" value="{{ request.args.get('min_price', '') }}">
+                            <input type="number" name="max_price" class="form-control" placeholder="До" value="{{ request.args.get('max_price', '') }}">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Сортування</label>
+                        <select name="sort" class="form-control">
+                            <option value="newest" {% if current_sort == 'newest' %}selected{% endif %}>Новинки</option>
+                            <option value="price_asc" {% if current_sort == 'price_asc' %}selected{% endif %}>Ціна: за зростанням</option>
+                            <option value="price_desc" {% if current_sort == 'price_desc' %}selected{% endif %}>Ціна: за спаданням</option>
+                            <option value="popular" {% if current_sort == 'popular' %}selected{% endif %}>Популярність</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100">
+                        <span>🔍</span> Застосувати фільтри
+                    </button>
+                    
+                    <a href="{{ url_for('catalog') }}" class="btn btn-secondary w-100 mt-2">
+                        <span>↺</span> Скинути фільтри
+                    </a>
+                </form>
+            </aside>
+            
+            <!-- Products Grid -->
+            <div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <p style="color: var(--text-secondary);">Знайдено товарів: <strong style="color: var(--primary-light);">{{ products.total }}</strong></p>
+                </div>
+                
+                {% if products.items %}
+                <div class="products-grid" data-stagger>
+                    {% for product in products.items %}
+                    <div class="card product-card">
+                        <div class="badges">
+                            {% if product.new %}
+                            <span class="badge badge-new">Новинка</span>
+                            {% endif %}
+                            {% if product.old_price and product.old_price > product.price %}
+                            <span class="badge badge-sale">-{{ ((1 - product.price / product.old_price) * 100)|round|int }}%</span>
+                            {% endif %}
+                            {% if product.bestseller %}
+                            <span class="badge badge-bestseller">Бестселер</span>
+                            {% endif %}
+                            {% if product.featured %}
+                            <span class="badge badge-featured">Рекомендуємо</span>
+                            {% endif %}
+                        </div>
+                        <div class="card-img">
+                            {% set cat_slug = product.category.slug if product.category else 'default' %}
+                            {% set brand_name = product.brand|lower if product.brand else 'generic' %}
+                            
+                            {% if cat_slug == 'cpu' %}
+                            <!-- CPU Image -->
+                            <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%;">
+                                <defs>
+                                    <linearGradient id="cpuGrad{{ loop.index }}" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#2d3436"/>
+                                        <stop offset="50%" style="stop-color:#636e72"/>
+                                        <stop offset="100%" style="stop-color:#2d3436"/>
+                                    </linearGradient>
+                                    <filter id="cpuShadow">
+                                        <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.5"/>
+                                    </filter>
+                                </defs>
+                                <rect x="50" y="40" width="200" height="160" rx="8" fill="url(#cpuGrad{{ loop.index }})" filter="url(#cpuShadow)"/>
+                                <rect x="80" y="70" width="140" height="100" rx="4" fill="#1a1a2e" stroke="#6c5ce7" stroke-width="2"/>
+                                <text x="150" y="120" text-anchor="middle" fill="#6c5ce7" font-size="16" font-weight="bold">{{ product.brand[:3]|upper if product.brand else 'INT' }}</text>
+                                <text x="150" y="140" text-anchor="middle" fill="#a0a0b0" font-size="10">{{ product.name.split()[-1] if product.name else 'CPU' }}</text>
+                                <!-- Pins -->
+                                {% for i in range(8) %}
+                                <rect x="{{ 55 + i * 25 }}" y="195" width="3" height="8" fill="#b0b0b0"/>
+                                <rect x="{{ 55 + i * 25 }}" y="35" width="3" height="8" fill="#b0b0b0"/>
+                                {% endfor %}
+                                {% for i in range(5) %}
+                                <rect x="45" y="{{ 60 + i * 30 }}" width="8" height="3" fill="#b0b0b0"/>
+                                <rect x="255" y="{{ 60 + i * 30 }}" width="8" height="3" fill="#b0b0b0"/>
+                                {% endfor %}
+                            </svg>
+                            
+                            {% elif cat_slug == 'gpu' %}
+                            <!-- GPU Image -->
+                            <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%;">
+                                <defs>
+                                    <linearGradient id="gpuGrad{{ loop.index }}" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#1a1a2e"/>
+                                        <stop offset="100%" style="stop-color:#16213e"/>
+                                    </linearGradient>
+                                </defs>
+                                <rect x="20" y="50" width="260" height="100" rx="6" fill="url(#gpuGrad{{ loop.index }})" stroke="#fd79a8" stroke-width="2"/>
+                                <rect x="40" y="65" width="80" height="70" rx="4" fill="#2d3436"/>
+                                <circle cx="80" cy="100" r="25" fill="none" stroke="#fd79a8" stroke-width="2"/>
+                                <circle cx="80" cy="100" r="15" fill="#fd79a8" opacity="0.3"/>
+                                <circle cx="200" cy="100" r="30" fill="none" stroke="#6c5ce7" stroke-width="2"/>
+                                <circle cx="200" cy="100" r="18" fill="#6c5ce7" opacity="0.3"/>
+                                <circle cx="250" cy="100" r="20" fill="none" stroke="#00cec9" stroke-width="2"/>
+                                <rect x="40" y="155" width="220" height="8" rx="2" fill="#2d3436"/>
+                                <text x="150" y="180" text-anchor="middle" fill="#fd79a8" font-size="12" font-weight="bold">{{ product.brand|upper if product.brand else 'GPU' }}</text>
+                            </svg>
+                            
+                            {% elif cat_slug == 'ram' %}
+                            <!-- RAM Image -->
+                            <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%;">
+                                <defs>
+                                    <linearGradient id="ramGrad{{ loop.index }}" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#00cec9"/>
+                                        <stop offset="100%" style="stop-color:#6c5ce7"/>
+                                    </linearGradient>
+                                </defs>
+                                <rect x="40" y="30" width="50" height="150" rx="4" fill="#1a1a2e" stroke="url(#ramGrad{{ loop.index }})" stroke-width="2"/>
+                                <rect x="100" y="30" width="50" height="150" rx="4" fill="#1a1a2e" stroke="url(#ramGrad{{ loop.index }})" stroke-width="2"/>
+                                <rect x="160" y="30" width="50" height="150" rx="4" fill="#1a1a2e" stroke="url(#ramGrad{{ loop.index }})" stroke-width="2"/>
+                                <rect x="220" y="30" width="50" height="150" rx="4" fill="#1a1a2e" stroke="url(#ramGrad{{ loop.index }})" stroke-width="2"/>
+                                <!-- Chips -->
+                                <rect x="55" y="50" width="20" height="12" fill="#2d3436" rx="1"/>
+                                <rect x="55" y="70" width="20" height="12" fill="#2d3436" rx="1"/>
+                                <rect x="115" y="50" width="20" height="12" fill="#2d3436" rx="1"/>
+                                <rect x="115" y="70" width="20" height="12" fill="#2d3436" rx="1"/>
+                                <rect x="175" y="50" width="20" height="12" fill="#2d3436" rx="1"/>
+                                <rect x="175" y="70" width="20" height="12" fill="#2d3436" rx="1"/>
+                                <rect x="235" y="50" width="20" height="12" fill="#2d3436" rx="1"/>
+                                <rect x="235" y="70" width="20" height="12" fill="#2d3436" rx="1"/>
+                                <!-- RGB strip -->
+                                <rect x="40" y="25" width="230" height="5" fill="url(#ramGrad{{ loop.index }})" rx="2"/>
+                                <text x="150" y="185" text-anchor="middle" fill="#00cec9" font-size="11" font-weight="bold">DDR5 32GB</text>
+                            </svg>
+                            
+                            {% elif cat_slug == 'storage' %}
+                            <!-- SSD Image -->
+                            <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%;">
+                                <defs>
+                                    <linearGradient id="ssdGrad{{ loop.index }}" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#00b894"/>
+                                        <stop offset="100%" style="stop-color:#00cec9"/>
+                                    </linearGradient>
+                                </defs>
+                                <rect x="60" y="50" width="180" height="100" rx="6" fill="#1a1a2e" stroke="url(#ssdGrad{{ loop.index }})" stroke-width="2"/>
+                                <rect x="80" y="65" width="100" height="30" rx="4" fill="#2d3436"/>
+                                <text x="130" y="85" text-anchor="middle" fill="#00b894" font-size="14" font-weight="bold">SSD</text>
+                                <circle cx="210" cy="100" r="15" fill="none" stroke="#00b894" stroke-width="2"/>
+                                <circle cx="210" cy="100" r="5" fill="#00b894"/>
+                                <rect x="80" y="105" width="120" height="8" rx="2" fill="#2d3436"/>
+                                <rect x="80" y="105" width="80" height="8" rx="2" fill="#00b894" opacity="0.5"/>
+                                <text x="150" y="180" text-anchor="middle" fill="#00b894" font-size="11" font-weight="bold">2TB NVMe</text>
+                            </svg>
+                            
+                            {% elif cat_slug == 'motherboard' %}
+                            <!-- Motherboard Image -->
+                            <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%;">
+                                <defs>
+                                    <linearGradient id="mbGrad{{ loop.index }}" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#fdcb6e"/>
+                                        <stop offset="100%" style="stop-color:#fd79a8"/>
+                                    </linearGradient>
+                                </defs>
+                                <rect x="30" y="30" width="240" height="150" rx="4" fill="#1a1a2e" stroke="#fdcb6e" stroke-width="2"/>
+                                <rect x="50" y="50" width="80" height="60" rx="2" fill="#2d3436" stroke="#fdcb6e" stroke-width="1"/>
+                                <text x="90" y="85" text-anchor="middle" fill="#fdcb6e" font-size="10">CPU SOCKET</text>
+                                <rect x="150" y="50" width="60" height="20" rx="2" fill="#2d3436"/>
+                                <rect x="150" y="80" width="60" height="20" rx="2" fill="#2d3436"/>
+                                <rect x="220" y="60" width="40" height="80" rx="2" fill="#2d3436"/>
+                                <circle cx="80" cy="150" r="20" fill="none" stroke="#fd79a8" stroke-width="2"/>
+                                <circle cx="160" cy="150" r="15" fill="none" stroke="#6c5ce7" stroke-width="2"/>
+                                <rect x="50" y="100" width="80" height="15" fill="#6c5ce7" opacity="0.3"/>
+                                <rect x="50" y="120" width="80" height="15" fill="#6c5ce7" opacity="0.3"/>
+                                <text x="150" y="190" text-anchor="middle" fill="#fdcb6e" font-size="10" font-weight="bold">{{ product.brand|upper if product.brand else 'MB' }}</text>
+                            </svg>
+                            
+                            {% elif cat_slug == 'psu' %}
+                            <!-- PSU Image -->
+                            <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%;">
+                                <defs>
+                                    <linearGradient id="psuGrad{{ loop.index }}" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#636e72"/>
+                                        <stop offset="100%" style="stop-color:#2d3436"/>
+                                    </linearGradient>
+                                </defs>
+                                <rect x="50" y="40" width="200" height="130" rx="6" fill="url(#psuGrad{{ loop.index }})" stroke="#fd79a8" stroke-width="2"/>
+                                <circle cx="100" cy="105" r="45" fill="#1a1a2e" stroke="#fd79a8" stroke-width="2"/>
+                                <circle cx="100" cy="105" r="35" fill="none" stroke="#fd79a8" stroke-width="1"/>
+                                <line x1="100" y1="75" x2="100" y2="85" stroke="#fd79a8" stroke-width="2"/>
+                                <line x1="100" y1="125" x2="100" y2="135" stroke="#fd79a8" stroke-width="2"/>
+                                <line x1="70" y1="105" x2="80" y2="105" stroke="#fd79a8" stroke-width="2"/>
+                                <line x1="120" y1="105" x2="130" y2="105" stroke="#fd79a8" stroke-width="2"/>
+                                <rect x="160" y="55" width="70" height="20" rx="2" fill="#2d3436"/>
+                                <rect x="160" y="85" width="70" height="20" rx="2" fill="#2d3436"/>
+                                <rect x="160" y="115" width="70" height="20" rx="2" fill="#2d3436"/>
+                                <rect x="165" y="60" width="60" height="10" fill="#00b894" rx="1"/>
+                                <rect x="165" y="90" width="60" height="10" fill="#00b894" rx="1"/>
+                                <rect x="165" y="120" width="60" height="10" fill="#00b894" rx="1"/>
+                                <text x="150" y="185" text-anchor="middle" fill="#fd79a8" font-size="14" font-weight="bold">850W 80+ GOLD</text>
+                            </svg>
+                            
+                            {% elif cat_slug == 'case' %}
+                            <!-- Case Image -->
+                            <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%;">
+                                <defs>
+                                    <linearGradient id="caseGrad{{ loop.index }}" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#6c5ce7"/>
+                                        <stop offset="100%" style="stop-color:#00cec9"/>
+                                    </linearGradient>
+                                </defs>
+                                <rect x="70" y="20" width="160" height="170" rx="8" fill="#1a1a2e" stroke="url(#caseGrad{{ loop.index }})" stroke-width="3"/>
+                                <rect x="85" y="35" width="130" height="80" rx="4" fill="#0a0a0f" stroke="#6c5ce7" stroke-width="1"/>
+                                <rect x="95" y="45" width="50" height="60" rx="2" fill="#2d3436" opacity="0.5"/>
+                                <circle cx="180" cy="75" r="20" fill="none" stroke="#6c5ce7" stroke-width="2"/>
+                                <circle cx="180" cy="75" r="10" fill="#6c5ce7" opacity="0.3"/>
+                                <circle cx="120" cy="150" r="25" fill="none" stroke="#00cec9" stroke-width="2"/>
+                                <circle cx="120" cy="150" r="15" fill="#00cec9" opacity="0.3"/>
+                                <circle cx="170" cy="155" r="18" fill="none" stroke="#fd79a8" stroke-width="2"/>
+                                <rect x="100" y="125" width="100" height="8" rx="2" fill="#2d3436"/>
+                                <rect x="100" y="125" width="70" height="8" rx="2" fill="#6c5ce7" opacity="0.5"/>
+                                <text x="150" y="200" text-anchor="middle" fill="#6c5ce7" font-size="11" font-weight="bold">ATX GAMING</text>
+                            </svg>
+                            
+                            {% else %}
+                            <!-- Default Product Image -->
+                            <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%;">
+                                <defs>
+                                    <linearGradient id="defGrad{{ loop.index }}" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#6c5ce7"/>
+                                        <stop offset="100%" style="stop-color:#00cec9"/>
+                                    </linearGradient>
+                                </defs>
+                                <rect x="50" y="30" width="200" height="150" rx="10" fill="#1a1a2e" stroke="url(#defGrad{{ loop.index }})" stroke-width="2"/>
+                                <circle cx="150" cy="100" r="50" fill="none" stroke="url(#defGrad{{ loop.index }})" stroke-width="2"/>
+                                <circle cx="150" cy="100" r="30" fill="url(#defGrad{{ loop.index }})" opacity="0.3"/>
+                                <text x="150" y="170" text-anchor="middle" fill="#a0a0b0" font-size="12">{{ product.brand[:8]|upper if product.brand else 'PRODUCT' }}</text>
+                            </svg>
+                            {% endif %}
+                        </div>
+                        <div class="card-body">
+                            <p class="brand">{{ product.brand or 'Generic' }}</p>
+                            <h3 class="card-title">{{ product.name }}</h3>
+                            <div class="price">
+                                {{ "{:,.0f}".format(product.price).replace(",", " ") }} ₴
+                                {% if product.old_price and product.old_price > product.price %}
+                                <span class="old-price">{{ "{:,.0f}".format(product.old_price).replace(",", " ") }} ₴</span>
+                                {% endif %}
+                            </div>
+                            <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.5rem;">
+                                {% if product.stock > 0 %}
+                                <span style="color: var(--success);">✓ В наявності</span>
+                                {% else %}
+                                <span style="color: var(--danger);">✗ Немає в наявності</span>
+                                {% endif %}
+                            </p>
+                            <div class="d-flex gap-2 mt-3">
+                                <button class="btn btn-primary btn-sm flex-grow-1 add-to-cart-btn" data-product-id="{{ product.id }}" onclick="addToCart({{ product.id }}, this)" {% if product.stock == 0 %}disabled{% endif %}>
+                                    <span>🛒</span> В кошик
+                                </button>
+                                <a href="{{ url_for('product', slug=product.slug) }}" class="btn btn-secondary btn-sm">
+                                    <span>👁️</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                {% if products.pages > 1 %}
+                <nav style="display: flex; justify-content: center; gap: 0.5rem; margin-top: 3rem;">
+                    {% if products.has_prev %}
+                    <a href="{{ url_for('catalog', page=products.prev_num, category=request.args.get('category'), brand=request.args.get('brand'), min_price=request.args.get('min_price'), max_price=request.args.get('max_price'), sort=request.args.get('sort'), search=request.args.get('search')) }}" class="btn btn-secondary btn-sm">← Попередня</a>
+                    {% endif %}
+                    {% for p in products.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                        {% if p %}
+                            <a href="{{ url_for('catalog', page=p, category=request.args.get('category'), brand=request.args.get('brand'), min_price=request.args.get('min_price'), max_price=request.args.get('max_price'), sort=request.args.get('sort'), search=request.args.get('search')) }}" class="btn btn-sm {% if p == products.page %}btn-primary{% else %}btn-secondary{% endif %}">{{ p }}</a>
+                        {% else %}
+                            <span class="btn btn-sm" style="opacity: 0.5;">...</span>
+                        {% endif %}
+                    {% endfor %}
+                    {% if products.has_next %}
+                    <a href="{{ url_for('catalog', page=products.next_num, category=request.args.get('category'), brand=request.args.get('brand'), min_price=request.args.get('min_price'), max_price=request.args.get('max_price'), sort=request.args.get('sort'), search=request.args.get('search')) }}" class="btn btn-secondary btn-sm">Наступна →</a>
+                    {% endif %}
+                </nav>
+                {% endif %}
+                
+                {% else %}
+                <div class="card" style="padding: 4rem; text-align: center;">
+                    <span style="font-size: 4rem; display: block; margin-bottom: 1rem;">😕</span>
+                    <h3>Товари не знайдено</h3>
+                    <p style="color: var(--text-secondary); margin-top: 1rem;">Спробуйте змінити параметри фільтрації</p>
+                    <a href="{{ url_for('catalog') }}" class="btn btn-primary mt-3">Показати всі товари</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

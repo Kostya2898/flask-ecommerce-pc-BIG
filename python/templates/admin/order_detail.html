@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Замовлення #{{ order.id }} - Ігрофікс ПК{% endblock %}
+
+{% block content %}
+<section class="section" style="padding-top: 100px;">
+    <div class="container">
+        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+            <a href="{{ url_for('admin_orders') }}" class="btn btn-secondary">← Назад</a>
+            <h1 class="section-title" style="margin: 0;">Замовлення #{{ order.id }}</h1>
+            {% if order.status == 'pending' %}
+            <span class="badge" style="background: #fdcb6e; color: #000; padding: 0.5rem 1rem;">Очікує</span>
+            {% elif order.status == 'processing' %}
+            <span class="badge" style="background: #74b9ff; color: #000; padding: 0.5rem 1rem;">Обробляється</span>
+            {% elif order.status == 'shipped' %}
+            <span class="badge" style="background: #a29bfe; color: #000; padding: 0.5rem 1rem;">Відправлено</span>
+            {% elif order.status == 'delivered' %}
+            <span class="badge" style="background: #00b894; color: #000; padding: 0.5rem 1rem;">Доставлено</span>
+            {% elif order.status == 'cancelled' %}
+            <span class="badge" style="background: #ff7675; color: #000; padding: 0.5rem 1rem;">Скасовано</span>
+            {% endif %}
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+            <div>
+                <div class="card" style="padding: 2rem; margin-bottom: 2rem;">
+                    <h3 style="margin-bottom: 1rem;">📦 Товари в замовленні</h3>
+                    {% for item in order.get_items() %}
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                        <div>
+                            <strong>{{ item.name }}</strong>
+                            <span style="color: var(--text-muted);"> × {{ item.quantity }} шт.</span>
+                        </div>
+                        <span style="color: var(--primary-light); font-weight: 600;">{{ "{:,.0f}".format(item.price * item.quantity).replace(",", " ") }} ₴</span>
+                    </div>
+                    {% endfor %}
+                    <div style="display: flex; justify-content: space-between; padding: 1rem 0; margin-top: 0.5rem;">
+                        <strong style="font-size: 1.2rem;">Разом:</strong>
+                        <strong style="font-size: 1.2rem; color: var(--primary-light);">{{ "{:,.0f}".format(order.total_price).replace(",", " ") }} ₴</strong>
+                    </div>
+                </div>
+                
+                {% if order.notes %}
+                <div class="card" style="padding: 2rem;">
+                    <h3 style="margin-bottom: 1rem;">💬 Коментар клієнта</h3>
+                    <p style="color: var(--text-secondary);">{{ order.notes }}</p>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div>
+                <div class="card" style="padding: 2rem; margin-bottom: 2rem;">
+                    <h3 style="margin-bottom: 1rem;">👤 Інформація про клієнта</h3>
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        <div>
+                            <span style="color: var(--text-muted);">Ім'я:</span>
+                            <strong>{{ order.user.username if order.user else 'Гість' }}</strong>
+                        </div>
+                        <div>
+                            <span style="color: var(--text-muted);">Email:</span>
+                            <strong>{{ order.user.email if order.user else '-' }}</strong>
+                        </div>
+                        <div>
+                            <span style="color: var(--text-muted);">Телефон:</span>
+                            <strong>{{ order.contact_phone or '-' }}</strong>
+                        </div>
+                        <div>
+                            <span style="color: var(--text-muted);">Адреса:</span>
+                            <strong>{{ order.delivery_address or '-' }}</strong>
+                        </div>
+                        <div>
+                            <span style="color: var(--text-muted);">Оплата:</span>
+                            <strong>{{ order.payment_method }}</strong>
+                        </div>
+                        <div>
+                            <span style="color: var(--text-muted);">Дата:</span>
+                            <strong>{{ order.created_at.strftime('%d.%m.%Y %H:%M') }}</strong>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card" style="padding: 2rem;">
+                    <h3 style="margin-bottom: 1rem;">🔄 Змінити статус</h3>
+                    <form method="POST" action="{{ url_for('admin_update_order_status', order_id=order.id) }}">
+                        <select name="status" class="form-control mb-2">
+                            <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>⏳ Очікує</option>
+                            <option value="processing" {% if order.status == 'processing' %}selected{% endif %}>🔄 Обробляється</option>
+                            <option value="shipped" {% if order.status == 'shipped' %}selected{% endif %}>🚚 Відправлено</option>
+                            <option value="delivered" {% if order.status == 'delivered' %}selected{% endif %}>✅ Доставлено</option>
+                            <option value="cancelled" {% if order.status == 'cancelled' %}selected{% endif %}>❌ Скасовано</option>
+                        </select>
+                        <button type="submit" class="btn btn-primary w-100">Оновити статус</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
